@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://c35pl50m7cqgd"]
+
+[ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
+[ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Menu.cs" id="2_nbt2s"]
+
+[node name="GenericCore" type="Node"]
+script = ExtResource("1_sk6ly")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="VBoxContainer" parent="Control" node_paths=PackedStringArray("JoinButton")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -181.0
+offset_top = -168.0
+offset_right = 180.0
+offset_bottom = 183.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_nbt2s")
+JoinButton = NodePath("Join")
+
+[node name="Join" type="Button" parent="Control/Menu"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Join"
+
+[node name="Host" type="Button" parent="Control/Menu"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Host"
+
+[node name="End" type="Button" parent="Control/Menu"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "End"
+
+[connection signal="pressed" from="Control/Menu/Join" to="Control/Menu" method="JoinGame"]
+[connection signal="pressed" from="Control/Menu/Host" to="Control/Menu" method="CreateGame"]
+[connection signal="pressed" from="Control/Menu/End" to="Control/Menu" method="LeaveGame"]
