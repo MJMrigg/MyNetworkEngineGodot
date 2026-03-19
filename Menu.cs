@@ -28,5 +28,6 @@ public partial class Menu : VBoxContainer
 	public void LeaveGame(){
 		Visible = true;
 		JoinButton.Visible = true;
+		GenericCore.Instance.RemoveMultiplayerPeer();
 	}
 }
