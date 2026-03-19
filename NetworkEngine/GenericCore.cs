@@ -10,6 +10,7 @@ public partial class GenericCore : Node
 	[Signal] public delegate void ClientConnectedEventHandler(int peerId);
 	[Signal] public delegate void ClientDisconnectedEventHandler(int peerId);
 	[Signal] public delegate void ServerDisconnectedEventHandler();
+	[Signal] public delegate void ClientConnectionFailEventHandler();
 	
 	//Connection information
 	[Export] public string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
@@ -20,7 +21,7 @@ public partial class GenericCore : Node
 	//Variables that make my life easier
 	public bool IsServer; //Whether the multiplayer peer is the server(just to make life easier)
 	public int ConnectionId; //The multiplayer peer's unique id (just to make life a litte easer
-	public bool IsConnected = false; //Whether the multiplayer peer is connected
+	public bool ThinksItsConnected = false; //Whether the multiplayer peer is connected
 
 	// This will contain the unique multiplayer keys for each registered connection
 	// It's a dictionary to make life a little easier
@@ -82,7 +83,7 @@ public partial class GenericCore : Node
 		
 		//Mark that this is the server and it is connected
 		IsServer = true;
-		IsConnected = true;
+		ThinksItsConnected = true;
 		ConnectionId = 1;
 		
 		return Error.Ok;
@@ -91,7 +92,7 @@ public partial class GenericCore : Node
 	// Stop multiplayer
 	public void RemoveMultiplayerPeer()
 	{
-		IsConnected = false;
+		ThinksItsConnected = false;
 		Multiplayer.MultiplayerPeer.Close();
 		Connections.Clear();
 	}
@@ -131,7 +132,7 @@ public partial class GenericCore : Node
 	public void OnConnectOk()
 	{
 		//Mark this client as sucessfully connected
-		IsConnected = true;
+		ThinksItsConnected = true;
 		IsServer = false;
 		ConnectionId = Multiplayer.GetUniqueId();
 		//Register the client in the client's list of connections
@@ -144,12 +145,12 @@ public partial class GenericCore : Node
 	public void OnConnectionFail()
 	{
 		RemoveMultiplayerPeer();
+		EmitSignal(SignalName.ClientConnectionFail);
 	}
 
 	//Server disconnected the client
 	public void OnServerDisconnected()
 	{
-		GD.Print("Server disconnected");
 		RemoveMultiplayerPeer();
 		EmitSignal(SignalName.ServerDisconnected);
 	}

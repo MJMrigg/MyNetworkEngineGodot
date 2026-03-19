@@ -14,7 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Menu" type="VBoxContainer" parent="Control" node_paths=PackedStringArray("JoinButton")]
+[node name="Menu" type="VBoxContainer" parent="Control" node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -28,24 +28,49 @@ offset_bottom = 183.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_nbt2s")
-JoinButton = NodePath("Join")
+NetworkingSection = NodePath("NetworkingSection")
+EndButton = NodePath("End")
+PortText = NodePath("NetworkingSection/Port")
 
-[node name="Join" type="Button" parent="Control/Menu"]
+[node name="NetworkingSection" type="VBoxContainer" parent="Control/Menu"]
+layout_mode = 2
+
+[node name="IpAddress" type="LineEdit" parent="Control/Menu/NetworkingSection"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "Join"
+placeholder_text = "IP Address"
+alignment = 1
 
-[node name="Host" type="Button" parent="Control/Menu"]
+[node name="Port" type="LineEdit" parent="Control/Menu/NetworkingSection"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+placeholder_text = "Port"
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/Menu/NetworkingSection"]
+layout_mode = 2
+alignment = 1
+
+[node name="Host" type="Button" parent="Control/Menu/NetworkingSection/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Host"
+
+[node name="Join" type="Button" parent="Control/Menu/NetworkingSection/HBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join"
 
 [node name="End" type="Button" parent="Control/Menu"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "End"
+text = "Quit"
 
-[connection signal="ServerDisconnected" from="." to="Control/Menu" method="LeaveGame"]
-[connection signal="pressed" from="Control/Menu/Join" to="Control/Menu" method="JoinGame"]
-[connection signal="pressed" from="Control/Menu/Host" to="Control/Menu" method="CreateGame"]
+[connection signal="ClientConnectionFail" from="." to="Control/Menu" method="Disconnected"]
+[connection signal="ServerDisconnected" from="." to="Control/Menu" method="Disconnected"]
+[connection signal="text_changed" from="Control/Menu/NetworkingSection/Port" to="Control/Menu" method="ManagePort"]
+[connection signal="pressed" from="Control/Menu/NetworkingSection/HBoxContainer/Host" to="Control/Menu" method="CreateGame"]
+[connection signal="pressed" from="Control/Menu/NetworkingSection/HBoxContainer/Join" to="Control/Menu" method="JoinGame"]
 [connection signal="pressed" from="Control/Menu/End" to="Control/Menu" method="LeaveGame"]
