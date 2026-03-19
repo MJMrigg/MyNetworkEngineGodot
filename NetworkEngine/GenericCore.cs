@@ -59,10 +59,6 @@ public partial class GenericCore : Node
 		//Set the current multiplayer peer to the client
 		Multiplayer.MultiplayerPeer = Peer;
 		
-		//Mark this as not the server
-		IsServer = false;
-		ConnectionId = Multiplayer.GetUniqueId();
-		
 		return Error.Ok;
 	}
 
@@ -95,7 +91,8 @@ public partial class GenericCore : Node
 	// Stop multiplayer
 	public void RemoveMultiplayerPeer()
 	{
-		Multiplayer.MultiplayerPeer = null;
+		IsConnected = false;
+		Multiplayer.MultiplayerPeer.Close();
 		Connections.Clear();
 	}
 
@@ -133,7 +130,10 @@ public partial class GenericCore : Node
 	//Client connects to the server
 	public void OnConnectOk()
 	{
+		//Mark this client as sucessfully connected
 		IsConnected = true;
+		IsServer = false;
+		ConnectionId = Multiplayer.GetUniqueId();
 		//Register the client in the client's list of connections
 		Connections[ConnectionId] = ConnectionId;
 		//Register the server
@@ -143,16 +143,14 @@ public partial class GenericCore : Node
 	//Client couldn't connect to the server
 	public void OnConnectionFail()
 	{
-		Multiplayer.MultiplayerPeer = null;
+		RemoveMultiplayerPeer();
 	}
 
 	//Server disconnected the client
 	public void OnServerDisconnected()
 	{
 		GD.Print("Server disconnected");
-		IsConnected = false;
-		Multiplayer.MultiplayerPeer = null;
-		Connections.Clear();
+		RemoveMultiplayerPeer();
 		EmitSignal(SignalName.ServerDisconnected);
 	}
 }
