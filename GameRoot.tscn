@@ -45,6 +45,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "End"
 
+[connection signal="ServerDisconnected" from="." to="Control/Menu" method="LeaveGame"]
 [connection signal="pressed" from="Control/Menu/Join" to="Control/Menu" method="JoinGame"]
 [connection signal="pressed" from="Control/Menu/Host" to="Control/Menu" method="CreateGame"]
 [connection signal="pressed" from="Control/Menu/End" to="Control/Menu" method="LeaveGame"]

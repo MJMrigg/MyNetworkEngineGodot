@@ -6,14 +6,16 @@ public partial class GenericCore : Node
 
 	//Signals emitted when connection functionality happens
 	//They have nothing to do with the functions that share the names that are connected to the multiplayer signals
-	//Except for the fact that those functions emit them. THEY'RE NOT CONNECTED!!!
-	[Signal] public delegate void PlayerConnectedEventHandler(int peerId);
-	[Signal] public delegate void PlayerDisconnectedEventHandler(int peerId);
+	//Except for the fact that those functions can emit them. THEY'RE NOT CONNECTED!!!
+	[Signal] public delegate void ClientConnectedEventHandler(int peerId);
+	[Signal] public delegate void ClientDisconnectedEventHandler(int peerId);
 	[Signal] public delegate void ServerDisconnectedEventHandler();
 	
+	//Connection information
 	[Export] public string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
 	[Export] public int Port = 7000;
 	[Export] public int MaxConnections = 20;
+	public int ConnectionsLoaded = 0;
 	
 	//Variables that make my life easier
 	public bool IsServer; //Whether the multiplayer peer is the server(just to make life easier)
@@ -22,16 +24,14 @@ public partial class GenericCore : Node
 
 	// This will contain the unique multiplayer keys for each registered connection
 	// It's a dictionary to make life a little easier
-	public Godot.Collections.Dictionary<long, long> _players = new Godot.Collections.Dictionary<long, long>();
-
-	public int _playersLoaded = 0;
+	public Godot.Collections.Dictionary<long, long> Connections = new Godot.Collections.Dictionary<long, long>();
 
 	public override void _Ready()
 	{
 		Instance = this;
 		//Server and client
-		Multiplayer.PeerConnected += OnPlayerConnected;
-		Multiplayer.PeerDisconnected += OnPlayerDisconnected;
+		Multiplayer.PeerConnected += OnClientConnected;
+		Multiplayer.PeerDisconnected += OnClientDisconnected;
 		//Clients only
 		Multiplayer.ConnectedToServer += OnConnectOk;
 		Multiplayer.ConnectionFailed += OnConnectionFail;
@@ -39,25 +39,25 @@ public partial class GenericCore : Node
 	}
 
 	//Join a multiplayer agme
-	public Error JoinGame(string address = "")
+	public Error JoinGame(string Address = "")
 	{
 		//Set the Ip Address
-		if (string.IsNullOrEmpty(address))
+		if (string.IsNullOrEmpty(Address))
 		{
-			address = DefaultServerIP;
+			Address = DefaultServerIP;
 		}
 		
 		//Create the multiplayer peer client
-		var peer = new ENetMultiplayerPeer();
-		Error error = peer.CreateClient(address, Port);
+		var Peer = new ENetMultiplayerPeer();
+		Error Response = Peer.CreateClient(Address, Port);
 
-		if (error != Error.Ok)
+		if (Response != Error.Ok)
 		{
-			return error;
+			return Response;
 		}
 		
 		//Set the current multiplayer peer to the client
-		Multiplayer.MultiplayerPeer = peer;
+		Multiplayer.MultiplayerPeer = Peer;
 		
 		//Mark this as not the server
 		IsServer = false;
@@ -70,19 +70,19 @@ public partial class GenericCore : Node
 	public Error CreateGame()
 	{
 		//Create the multiplayer peer server
-		var peer = new ENetMultiplayerPeer();
-		Error error = peer.CreateServer(Port, MaxConnections);
+		var Peer = new ENetMultiplayerPeer();
+		Error Response = Peer.CreateServer(Port, MaxConnections);
 
-		if (error != Error.Ok)
+		if (Response != Error.Ok)
 		{
-			return error;
+			return Response;
 		}
 		
 		//Set the current mutiplayer peer to the server
-		Multiplayer.MultiplayerPeer = peer;
+		Multiplayer.MultiplayerPeer = Peer;
 		//Register the server in the list of connections
-		_players[1] = 1;
-		EmitSignal(SignalName.PlayerConnected, 1);
+		Connections[1] = 1;
+		EmitSignal(SignalName.ClientConnected, 1);
 		
 		//Mark that this is the server and it is connected
 		IsServer = true;
@@ -96,44 +96,38 @@ public partial class GenericCore : Node
 	public void RemoveMultiplayerPeer()
 	{
 		Multiplayer.MultiplayerPeer = null;
-		_players.Clear();
-	}
-
-	// When the server decides to start the game from a UI scene,
-	// do Rpc(Lobby.MethodName.LoadGame, filePath);
-	[Rpc(CallLocal = true,TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	public void LoadGame(string gameScenePath)
-	{
-		GetTree().ChangeSceneToFile(gameScenePath);
+		Connections.Clear();
 	}
 
 	//Connection between two peers is established(can be client-client, or client-server)
-	public void OnPlayerConnected(long id)
+	public void OnClientConnected(long id)
 	{
 		//Server registers client or client registers server
 		//Godot forces clients to connect to each other, so they just won't register each other
 		//Meaning that they'll have connections, they just won't know it.
 		if(IsServer || id == 1){
-			RpcId(id, MethodName.RegisterPlayer);
+			RpcId(id, MethodName.RegisterClient);
+		}else{
+			//Multiplayer.MultiplayerPeer.DisconnectPeer((int)id, false);
 		}
 		//Why not just force disconnect? Because that opens the door to weird errors that I'd rather not deal with
 	}
 
-	//Register a connection
+	//Register a connection in the list of connections
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-	public void RegisterPlayer()
+	public void RegisterClient()
 	{
-		int newPlayerId = Multiplayer.GetRemoteSenderId();
-		_players[newPlayerId] = newPlayerId;
-		EmitSignal(SignalName.PlayerConnected, newPlayerId);
+		int NewClientId = Multiplayer.GetRemoteSenderId();
+		Connections[NewClientId] = NewClientId;
+		EmitSignal(SignalName.ClientConnected, NewClientId);
 	}
 	
-	//Peer disconnected from this peer
-	public void OnPlayerDisconnected(long id)
+	//A peer disconnected from this peer
+	public void OnClientDisconnected(long id)
 	{
 		//Unregister it
-		_players.Remove(id);
-		EmitSignal(SignalName.PlayerDisconnected, id);
+		Connections.Remove(id);
+		EmitSignal(SignalName.ClientDisconnected, id);
 	}
 
 	//Client connects to the server
@@ -141,9 +135,9 @@ public partial class GenericCore : Node
 	{
 		IsConnected = true;
 		//Register the client in the client's list of connections
-		_players[ConnectionId] = ConnectionId;
+		Connections[ConnectionId] = ConnectionId;
 		//Register the server
-		EmitSignal(SignalName.PlayerConnected, ConnectionId);
+		EmitSignal(SignalName.ClientConnected, ConnectionId);
 	}
 
 	//Client couldn't connect to the server
@@ -152,13 +146,13 @@ public partial class GenericCore : Node
 		Multiplayer.MultiplayerPeer = null;
 	}
 
-	//Server disconnected the player
+	//Server disconnected the client
 	public void OnServerDisconnected()
 	{
-		GD.Print("Server ended the game");
+		GD.Print("Server disconnected");
 		IsConnected = false;
 		Multiplayer.MultiplayerPeer = null;
-		_players.Clear();
+		Connections.Clear();
 		EmitSignal(SignalName.ServerDisconnected);
 	}
 }
