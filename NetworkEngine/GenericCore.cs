@@ -18,6 +18,9 @@ public partial class GenericCore : Node
 	[Export] public int MaxConnections = 20;
 	public int ConnectionsLoaded = 0;
 	
+	//Network core
+	[Export] public MultiplayerSpawner MainNetworkCore;
+	
 	//Variables that make my life easier
 	public bool IsServer; //Whether the multiplayer peer is the server(just to make life easier)
 	public int ConnectionId; //The multiplayer peer's unique id (just to make life a litte easer

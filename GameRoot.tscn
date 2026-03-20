@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://c35pl50m7cqgd"]
+[gd_scene load_steps=5 format=3 uid="uid://c35pl50m7cqgd"]
 
 [ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
-[ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Menu.cs" id="2_nbt2s"]
+[ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Scripts/Menu.cs" id="2_nbt2s"]
+[ext_resource type="Script" uid="uid://d0geigxvsllc1" path="res://Scripts/GameMaster.cs" id="3_7kk1n"]
+[ext_resource type="Script" uid="uid://cugvubk20vm4s" path="res://NetworkEngine/NetworkCore.cs" id="3_hirbl"]
 
-[node name="GenericCore" type="Node"]
+[node name="GenericCore" type="Node" node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_sk6ly")
+MainNetworkCore = NodePath("ObjectSpawner")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -68,6 +71,21 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Quit"
 
+[node name="UiSpawner" type="MultiplayerSpawner" parent="Control"]
+spawn_path = NodePath("..")
+script = ExtResource("3_hirbl")
+
+[node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg")
+spawn_path = NodePath("../Game")
+script = ExtResource("3_hirbl")
+
+[node name="Game" type="Node2D" parent="." node_paths=PackedStringArray("ObjectSpawner", "UiSpawner")]
+script = ExtResource("3_7kk1n")
+ObjectSpawner = NodePath("../ObjectSpawner")
+UiSpawner = NodePath("../Control/UiSpawner")
+
+[connection signal="ClientConnected" from="." to="Game" method="SpawnCharacter"]
 [connection signal="ClientConnectionFail" from="." to="Control/Menu" method="Disconnected"]
 [connection signal="ServerDisconnected" from="." to="Control/Menu" method="Disconnected"]
 [connection signal="text_changed" from="Control/Menu/NetworkingSection/Port" to="Control/Menu" method="ManagePort"]
