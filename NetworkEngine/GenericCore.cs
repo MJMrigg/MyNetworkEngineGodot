@@ -7,10 +7,11 @@ public partial class GenericCore : Node
 	//Signals emitted when connection functionality happens
 	//They have nothing to do with the functions that share the names that are connected to the multiplayer signals
 	//Except for the fact that those functions can emit them. THEY'RE NOT CONNECTED!!!
-	[Signal] public delegate void ClientConnectedEventHandler(int peerId);
-	[Signal] public delegate void ClientDisconnectedEventHandler(int peerId);
+	[Signal] public delegate void ClientConnectedEventHandler(int PeerId);
+	[Signal] public delegate void ClientDisconnectedEventHandler(int PeerId);
 	[Signal] public delegate void ServerDisconnectedEventHandler();
 	[Signal] public delegate void ClientConnectionFailEventHandler();
+	[Signal] public delegate void ClientConnectionSucessEventHandler(int PeerId);
 	
 	//Connection information
 	[Export] public string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
@@ -18,13 +19,9 @@ public partial class GenericCore : Node
 	[Export] public int MaxConnections = 20;
 	public int ConnectionsLoaded = 0;
 	
-	//Network core
-	[Export] public MultiplayerSpawner MainNetworkCore;
-	
 	//Variables that make my life easier
-	public bool IsServer; //Whether the multiplayer peer is the server(just to make life easier)
-	public int ConnectionId; //The multiplayer peer's unique id (just to make life a litte easer
 	public bool ThinksItsConnected = false; //Whether the multiplayer peer is connected
+	[Export] public NetworkCore MainNetworkCore;
 
 	// This will contain the unique multiplayer keys for each registered connection
 	// It's a dictionary to make life a little easier
@@ -41,7 +38,7 @@ public partial class GenericCore : Node
 		Multiplayer.ConnectionFailed += OnConnectionFail;
 		Multiplayer.ServerDisconnected += OnServerDisconnected;
 	}
-
+	
 	//Join a multiplayer agme
 	public Error JoinGame(string Address = "")
 	{
@@ -85,9 +82,7 @@ public partial class GenericCore : Node
 		EmitSignal(SignalName.ClientConnected, 1);
 		
 		//Mark that this is the server and it is connected
-		IsServer = true;
 		ThinksItsConnected = true;
-		ConnectionId = 1;
 		
 		return Error.Ok;
 	}
@@ -106,7 +101,7 @@ public partial class GenericCore : Node
 		//Server registers client or client registers server
 		//Godot forces clients to connect to each other, so they just won't register each other
 		//Meaning that they'll have connections, they just won't know it.
-		if(IsServer || id == 1){
+		if(IsServer() || id == 1){
 			RpcId(id, MethodName.RegisterClient);
 		}else{
 			//Multiplayer.MultiplayerPeer.DisconnectPeer((int)id, false);
@@ -136,12 +131,11 @@ public partial class GenericCore : Node
 	{
 		//Mark this client as sucessfully connected
 		ThinksItsConnected = true;
-		IsServer = false;
-		ConnectionId = Multiplayer.GetUniqueId();
+		int ConnectionId = Multiplayer.GetUniqueId();
 		//Register the client in the client's list of connections
 		Connections[ConnectionId] = ConnectionId;
 		//Register the server
-		EmitSignal(SignalName.ClientConnected, ConnectionId);
+		EmitSignal(SignalName.ClientConnectionSucess, ConnectionId);
 	}
 
 	//Client couldn't connect to the server
@@ -156,5 +150,15 @@ public partial class GenericCore : Node
 	{
 		RemoveMultiplayerPeer();
 		EmitSignal(SignalName.ServerDisconnected);
+	}
+	
+	//Get whether the generic core is the server
+	public bool IsServer(){
+		return Multiplayer.IsServer();
+	}
+	
+	//Get whether an object's id is this connection's id
+	public bool IsLocal(int NetId){
+		return (NetId == Multiplayer.GetUniqueId());
 	}
 }

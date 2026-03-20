@@ -3,25 +3,15 @@ using System;
 
 public partial class NetworkCore : MultiplayerSpawner
 {
+	//Spawn first object in spawn list upon client connect
+	public void SpawnOnConnection(int OwnerId){
+		if(OwnerId != 1 && GenericCore.Instance.IsServer()){ //Not server though
+			SpawnObject(0, new Vector3(GD.RandRange(0,400),GD.RandRange(0,400),0), new Vector3(GD.RandRange(0,400),GD.RandRange(0,400),0), new Vector3(GD.RandRange(1,3),GD.RandRange(1,3),1), OwnerId);
+		}
+	}
+	
 	//Spawn an object and set its properties
 	public Node SpawnObject(int Index, Vector3 SpawnPosition, Vector3 SpawnRotation, Vector3 SpawnScale, int OwnerId=1){
-		//Spawn Object needs an index to spawn the object
-		if(Index == null){
-			GD.Print("Error: no index");
-			return null;
-		}
-		
-		//Handle null values
-		if(SpawnPosition == null){
-			SpawnPosition = new Vector3(0,0,0);
-		}
-		if(SpawnRotation == null){
-			SpawnRotation = new Vector3(0,0,0);
-		}
-		if(SpawnScale == null){
-			SpawnScale = new Vector3(1,1,1);
-		}
-		
 		try{
 			//Create the object
 			var ObjectScene = GD.Load<PackedScene>(GetSpawnableScene(Index));
@@ -39,8 +29,9 @@ public partial class NetworkCore : MultiplayerSpawner
 				((Node3D)NewObject).Scale = SpawnScale;
 			}
 			
-			//Set its name to be the OwnerId
-			NewObject.Name = OwnerId.ToString();
+			//Set its name to be random since Spawners can't handle having two objects of the same name
+			//Include the OwnerId. When the object starts synchronizing, it'll need it
+			NewObject.Name = Multiplayer.MultiplayerPeer.GenerateUniqueId().ToString()+"+"+OwnerId.ToString();
 			
 			//Add it to the scene
 			GetNode(SpawnPath).AddChild(NewObject);
