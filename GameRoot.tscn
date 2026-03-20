@@ -17,8 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Menu" type="VBoxContainer" parent="Control" node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
-layout_mode = 1
+[node name="Menu" type="VBoxContainer" parent="." node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -35,60 +34,58 @@ NetworkingSection = NodePath("NetworkingSection")
 EndButton = NodePath("End")
 PortText = NodePath("NetworkingSection/Port")
 
-[node name="NetworkingSection" type="VBoxContainer" parent="Control/Menu"]
+[node name="NetworkingSection" type="VBoxContainer" parent="Menu"]
 layout_mode = 2
 
-[node name="IpAddress" type="LineEdit" parent="Control/Menu/NetworkingSection"]
+[node name="IpAddress" type="LineEdit" parent="Menu/NetworkingSection"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "IP Address"
 alignment = 1
 
-[node name="Port" type="LineEdit" parent="Control/Menu/NetworkingSection"]
+[node name="Port" type="LineEdit" parent="Menu/NetworkingSection"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "Port"
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Control/Menu/NetworkingSection"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu/NetworkingSection"]
 layout_mode = 2
 alignment = 1
 
-[node name="Host" type="Button" parent="Control/Menu/NetworkingSection/HBoxContainer"]
+[node name="Host" type="Button" parent="Menu/NetworkingSection/HBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Host"
 
-[node name="Join" type="Button" parent="Control/Menu/NetworkingSection/HBoxContainer"]
+[node name="Join" type="Button" parent="Menu/NetworkingSection/HBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 
-[node name="End" type="Button" parent="Control/Menu"]
+[node name="End" type="Button" parent="Menu"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Quit"
 
-[node name="UiSpawner" type="MultiplayerSpawner" parent="Control"]
-spawn_path = NodePath("..")
+[node name="UiSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Control")
 script = ExtResource("3_hirbl")
+
+[node name="Game" type="Node2D" parent="."]
+script = ExtResource("3_7kk1n")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg")
 spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
 
-[node name="Game" type="Node2D" parent="." node_paths=PackedStringArray("ObjectSpawner", "UiSpawner")]
-script = ExtResource("3_7kk1n")
-ObjectSpawner = NodePath("../ObjectSpawner")
-UiSpawner = NodePath("../Control/UiSpawner")
-
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
-[connection signal="ClientConnectionFail" from="." to="Control/Menu" method="Disconnected"]
-[connection signal="ServerDisconnected" from="." to="Control/Menu" method="Disconnected"]
-[connection signal="text_changed" from="Control/Menu/NetworkingSection/Port" to="Control/Menu" method="ManagePort"]
-[connection signal="pressed" from="Control/Menu/NetworkingSection/HBoxContainer/Host" to="Control/Menu" method="CreateGame"]
-[connection signal="pressed" from="Control/Menu/NetworkingSection/HBoxContainer/Join" to="Control/Menu" method="JoinGame"]
-[connection signal="pressed" from="Control/Menu/End" to="Control/Menu" method="LeaveGame"]
+[connection signal="ClientConnectionFail" from="." to="Menu" method="Disconnected"]
+[connection signal="ServerDisconnected" from="." to="Menu" method="Disconnected"]
+[connection signal="text_changed" from="Menu/NetworkingSection/Port" to="Menu" method="ManagePort"]
+[connection signal="pressed" from="Menu/NetworkingSection/HBoxContainer/Host" to="Menu" method="CreateGame"]
+[connection signal="pressed" from="Menu/NetworkingSection/HBoxContainer/Join" to="Menu" method="JoinGame"]
+[connection signal="pressed" from="Menu/End" to="Menu" method="LeaveGame"]

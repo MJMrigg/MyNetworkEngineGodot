@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://3bony6qrrcpg"]
+[gd_scene load_steps=5 format=3 uid="uid://3bony6qrrcpg"]
+
+[ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_oolk3"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_y7k42"]
 size = Vector3(100, 100, 1)
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_y7k42"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oolk3"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
@@ -13,11 +15,34 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:scale")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath(".:velocity")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:ServerSynced")
+properties/4/spawn = true
+properties/4/replication_mode = 2
 
-[node name="Character" type="CharacterBody2D"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7ig0a"]
+properties/0/path = NodePath(".:InputedVelocity")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:ClientSynced")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer")]
+script = ExtResource("1_oolk3")
+ClientSynchronizer = NodePath("ClientSynchronizer")
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
 mesh = SubResource("BoxMesh_y7k42")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_y7k42")
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_oolk3")
+
+[node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_7ig0a")
+public_visibility = false
+
+[connection signal="synchronized" from="ServerSynchronizer" to="." method="ServerIsSynced"]
+[connection signal="synchronized" from="ClientSynchronizer" to="." method="ClientIsSynced"]
