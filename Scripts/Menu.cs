@@ -23,21 +23,16 @@ public partial class Menu : VBoxContainer
 		}
 	}
 	
-	//Toggle the networking section(should not be visible during a game)
-	public void ToggleButtons(){
-		NetworkingSection.Visible = !NetworkingSection.Visible;
-	}
-	
 	//When the server is started, hide the join button
 	public void CreateGame(){
-		ToggleButtons();
+		NetworkingSection.Visible = false;
 		EndButton.Text = "End Game";
 		GenericCore.Instance.CreateGame();
 	}
 	
 	//When the player joins a game, hide the menu and the join button
 	public void JoinGame(){
-		ToggleButtons();
+		NetworkingSection.Visible = false;
 		Visible = false;
 		//Change port and IP address
 		if(IpAddress != "" && IpAddress != null){

@@ -157,8 +157,8 @@ public partial class GenericCore : Node
 		return Multiplayer.IsServer();
 	}
 	
-	//Get whether an object's id is this connection's id
-	public bool IsLocal(int NetId){
-		return (NetId == Multiplayer.GetUniqueId());
+	//Get this connection's peer id
+	public int GetConnectionId(){
+		return Multiplayer.GetUniqueId();
 	}
 }

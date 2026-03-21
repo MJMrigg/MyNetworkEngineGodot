@@ -17,6 +17,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="UiSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Control")
+script = ExtResource("3_hirbl")
+
 [node name="Menu" type="VBoxContainer" parent="." node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
 anchors_preset = 8
 anchor_left = 0.5
@@ -69,10 +73,6 @@ text = "Join"
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Quit"
-
-[node name="UiSpawner" type="MultiplayerSpawner" parent="."]
-spawn_path = NodePath("../Control")
-script = ExtResource("3_hirbl")
 
 [node name="Game" type="Node2D" parent="."]
 script = ExtResource("3_7kk1n")
