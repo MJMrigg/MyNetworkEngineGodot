@@ -36,7 +36,6 @@ public partial class NetId : MultiplayerSynchronizer
 		//Set the multiplayer authority
 		int ClientId = int.Parse(((string)GetNode(RootPath).Name).Split("+")[1]);
 		SetMultiplayerAuthority(ClientId);
-		GD.Print(ClientId);
 		
 		//Redo network variables
 		IsLocal = (ClientId == GenericCore.Instance.GetConnectionId());
@@ -50,13 +49,6 @@ public partial class NetId : MultiplayerSynchronizer
 		if(IsConnected(SignalName.Synchronized, Function)){
 			Disconnect(SignalName.Synchronized, Function);
 		}
-		//If the client is supposed to have authority over this synchronizer, give them it
-		/*GD.Print("TEST");
-		GD.Print(ClientAuthority);
-		if(ClientAuthority){
-			GD.Print("TESTSTESS");
-			GiveAuthority();
-		}*/
 		//Say that the NetId is sending data
 		SendingData = true;
 	}
