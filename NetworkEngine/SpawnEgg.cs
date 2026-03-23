@@ -47,10 +47,18 @@ public partial class SpawnEgg : Node2D
 		if(Spawned && Respawn){
 			await ToSignal(GetTree().CreateTimer(RespawnTimer),"timeout");
 		}
+		//Set up its position so that it spawns relative to its parent
+		Vector2 SpawnPosition = new Vector2(Position.X, Position.Y);
+		//If the parent is also a Node2D, add its position in case the parent was off centered
+		Node Parent = GetParent();
+		if(Parent is Node2D){
+			Node2D Parent2D = (Node2D)Parent;
+			SpawnPosition += Parent2D.Position;
+		}
 		//Spawn the object
 		TheObject = GenericCore.Instance.MainNetworkCore.SpawnObject(
 			SpawnIndex, 
-			new Vector3(Position.X, Position.Y, 1), 
+			new Vector3(SpawnPosition.X, SpawnPosition.Y, 0), 
 			new Vector3(Rotation, Rotation, Rotation), 
 			new Vector3(Scale.X, Scale.Y, 1), 
 			1

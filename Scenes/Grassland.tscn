@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bb5vxj87rhtew"]
+
+[ext_resource type="Texture2D" uid="uid://gm5500yl5su8" path="res://Images/Levels/GrassBackgroun.png" id="1_sy5jx"]
+
+[node name="Forest" type="Sprite2D"]
+z_index = -1
+position = Vector2(576, 324.00006)
+scale = Vector2(2.2500002, 1.2656252)
+texture = ExtResource("1_sy5jx")

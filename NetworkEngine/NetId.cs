@@ -8,6 +8,9 @@ public partial class NetId : MultiplayerSynchronizer
 	public bool IsLocal = false; //If the peer is the local client
 	public bool IsServer = false; //If the peer is the server
 	
+	//The connection that NetId handles
+	public int OwnerId;
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -29,18 +32,11 @@ public partial class NetId : MultiplayerSynchronizer
 			ClientSynchronizer.GiveAuthority();
 			base._EnterTree();
 		}
+		
+		You should be able to just type the variable name in the synchronizer and call it a day
 		*/
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-		if(!GenericCore.Instance.ThinksItsConnected){
-			GetNode(RootPath).QueueFree();
-		}
-		base._Process(delta);
-	}
-	
 	//Give client authority to this synchronizer using the name of the node its synchronizing
 	public void GiveAuthority(){
 		//Set the multiplayer authority
@@ -57,11 +53,6 @@ public partial class NetId : MultiplayerSynchronizer
 		if(PeerId != GetMultiplayerAuthority()){
 			return;
 		}
-		GetNode(RootPath).QueueFree();
-	}
-	
-	//Despawn the object when the server disconnects
-	public void ServerDespawn(){
 		GetNode(RootPath).QueueFree();
 	}
 }

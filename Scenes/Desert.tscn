@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bup8860i4q1th"]
+
+[ext_resource type="Texture2D" uid="uid://bhaxvn0yyxflw" path="res://Images/Levels/Desert.png" id="1_fids1"]
+[ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="2_0h24v"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fids1"]
+properties/0/path = NodePath(".:scale")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Desert" type="Sprite2D"]
+z_index = -1
+position = Vector2(576, 324.00006)
+scale = Vector2(2.2500002, 1.2656252)
+texture = ExtResource("1_fids1")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_fids1")
+
+[node name="CoinSpawnEgg" type="Node2D" parent="."]
+position = Vector2(197.77776, 165.13571)
+script = ExtResource("2_0h24v")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0

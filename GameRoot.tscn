@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://c35pl50m7cqgd"]
+[gd_scene load_steps=10 format=3 uid="uid://c35pl50m7cqgd"]
 
 [ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
 [ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Scripts/Menu.cs" id="2_nbt2s"]
-[ext_resource type="Script" uid="uid://d0geigxvsllc1" path="res://Scripts/GameMaster.cs" id="3_7kk1n"]
+[ext_resource type="Script" uid="uid://c8xwfpucqudoa" path="res://Scripts/GameMaster.cs" id="3_7kk1n"]
 [ext_resource type="Script" uid="uid://cugvubk20vm4s" path="res://NetworkEngine/NetworkCore.cs" id="3_hirbl"]
+[ext_resource type="Texture2D" uid="uid://cjdxcnsa4iq4y" path="res://Images/Characters/Square.png" id="3_xpglq"]
+[ext_resource type="Texture2D" uid="uid://08na0i7kethe" path="res://Images/Characters/Circle.png" id="4_a4rlw"]
 [ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="5_8pgip"]
+[ext_resource type="Texture2D" uid="uid://c2j6gov3uc8tv" path="res://Images/Characters/Triangle.png" id="5_pv2v4"]
+[ext_resource type="Texture2D" uid="uid://dd82cwhu65ctw" path="res://Images/Characters/Star.png" id="6_kjgx1"]
 
 [node name="GenericCore" type="Node" node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_sk6ly")
@@ -17,10 +21,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="UiSpawner" type="MultiplayerSpawner" parent="."]
-spawn_path = NodePath("../Online")
-script = ExtResource("3_hirbl")
 
 [node name="Offline" type="Control" parent="."]
 layout_mode = 3
@@ -66,6 +66,15 @@ size_flags_horizontal = 3
 [node name="Character" type="ItemList" parent="Offline/Menu/ClientInformation/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+item_count = 4
+item_0/text = "Square"
+item_0/icon = ExtResource("3_xpglq")
+item_1/text = "Circle"
+item_1/icon = ExtResource("4_a4rlw")
+item_2/text = "Triangle"
+item_2/icon = ExtResource("5_pv2v4")
+item_3/text = "Star"
+item_3/icon = ExtResource("6_kjgx1")
 
 [node name="Color" type="ColorPickerButton" parent="Offline/Menu/ClientInformation/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
@@ -128,13 +137,18 @@ anchor_bottom = 0.07700001
 offset_right = -0.27200317
 offset_bottom = 0.10399628
 
+[node name="UiSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Online")
+script = ExtResource("3_hirbl")
+
 [node name="Game" type="Node2D" parent="."]
 script = ExtResource("3_7kk1n")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg", "", "", "", "uid://b7o82udckvuxv")
+_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://b7o82udckvuxv", "uid://bb5vxj87rhtew", "uid://bup8860i4q1th", "uid://bx8wmsos5qt58")
 spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
+SpawnOnConnect = true
 
 [node name="CoinSpawnEgg" type="Node2D" parent="."]
 position = Vector2(260, 266)
@@ -143,10 +157,14 @@ SpawnIndex = 4
 Respawn = true
 RespawnTimer = 10.0
 
+[connection signal="ClientConnected" from="." to="UiSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnectionFail" from="." to="Offline/Menu" method="Disconnected"]
 [connection signal="ServerCreated" from="." to="Offline/Menu" method="ToggleMenu"]
+[connection signal="ServerCreated" from="." to="Game" method="SpawnLevel"]
+[connection signal="ServerDisconnected" from="." to="UiSpawner" method="DestroyObjects"]
 [connection signal="ServerDisconnected" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ServerDisconnected" from="." to="ObjectSpawner" method="DestroyObjects"]
 [connection signal="text_changed" from="Offline/Menu/NetworkingSection/Port" to="Offline/Menu" method="ManagePort"]
 [connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Host" to="Offline/Menu" method="CreateGame"]
 [connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Join" to="Offline/Menu" method="JoinGame"]

@@ -4,9 +4,21 @@ using System;
 
 public partial class NetworkCore : MultiplayerSpawner
 {
+	public int ObjectCount = 0; //Number of objects spawned
+	[Export] public bool SpawnOnConnect; //Whether to spawn the first index on connection
+	[Export] public bool HostIsPlayer; //Whether the host is a player or not
+	
 	//Spawn first object in spawn list upon client connect
 	public void SpawnOnConnection(int OwnerId){
-		if(OwnerId != 1 && GenericCore.Instance.IsServer()){ //Not when the server connects though
+		if(!SpawnOnConnect){
+			return;
+		}
+		//If the server isn't a player, don't spawn anything
+		if(OwnerId == 1 && !HostIsPlayer){
+			return;
+		}
+		//Only server should spawn objects
+		if(GenericCore.Instance.IsServer()){
 			SpawnObject(0, new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(1,1,1), OwnerId);
 		}
 	}
@@ -19,20 +31,25 @@ public partial class NetworkCore : MultiplayerSpawner
 			var NewObject = ObjectScene.Instantiate();
 			
 			//Set properties
-			if(NewObject is Node2D || NewObject is Control){ //2D nodes
-				((Node2D)NewObject).Position = new Vector2(SpawnPosition.X, SpawnPosition.Y);
+			if(NewObject is Node2D){ //2D nodes
+				((Node2D)NewObject).GlobalPosition = new Vector2(SpawnPosition.X, SpawnPosition.Y);
 				//Rotation is weird, since you can only rotate one axis for 3D objects, so Godot stores that as a float
 				((Node2D)NewObject).Rotation = SpawnRotation.X;
-				((Node2D)NewObject).Scale = new Vector2(SpawnScale.X, SpawnScale.Y);
+				//For scaling, the object's scale must be multiplied by its spawn scale, other wise it'll just scale to the spawn scale and forget its intial scale
+				Vector2 IntialScale = ((Node2D)NewObject).Scale;
+				((Node2D)NewObject).Scale = new Vector2(IntialScale.X * SpawnScale.X, IntialScale.Y * SpawnScale.Y);
 			}else if(NewObject is Node3D){ //3D nodes
-				((Node3D)NewObject).Position = SpawnPosition;
+				((Node3D)NewObject).GlobalPosition = SpawnPosition;
 				((Node3D)NewObject).Rotation = SpawnRotation;
-				((Node3D)NewObject).Scale = SpawnScale;
+				//For scaling, the object's scale must be multiplied by its spawn scale, other wise it'll just scale to the spawn scale and forget its intial scale
+				Vector3 IntialScale = ((Node3D)NewObject).Scale;
+				((Node3D)NewObject).Scale = SpawnScale * IntialScale;
 			}
 			
 			//Set its name to be random since Spawners can't handle having two objects of the same name
 			//Include the OwnerId. When the object starts synchronizing, it'll need it
-			NewObject.Name = Multiplayer.MultiplayerPeer.GenerateUniqueId().ToString()+"+"+OwnerId.ToString();
+			NewObject.Name = NewObject.Name+ObjectCount+"+"+OwnerId.ToString();
+			ObjectCount += 1;
 			
 			//Add it to the scene
 			GetNode(SpawnPath).AddChild(NewObject);
@@ -52,7 +69,6 @@ public partial class NetworkCore : MultiplayerSpawner
 				//Only the server should be deleting objects
 				if(Temp.IsServer){
 					GenericCore.Instance.ClientDisconnected += Temp.ClientDespawn;
-					GenericCore.Instance.ServerDisconnected += Temp.ServerDespawn;
 				}
 			}
 			
@@ -63,5 +79,12 @@ public partial class NetworkCore : MultiplayerSpawner
 		}
 		//If it got here, there was an error
 		return null;
+	}
+	
+	//Destroy all objects in the spawn path
+	public void DestroyObjects(){
+		foreach(Node Child in GetNode(SpawnPath).GetChildren()){
+			Child.QueueFree();
+		}
 	}
 }
