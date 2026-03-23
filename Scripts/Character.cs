@@ -23,11 +23,11 @@ public partial class Character : CharacterBody2D
 	public override void _Process(double delta)
 	{
 		base._Process(delta);
-		if(ServerSynchronizer.IsServer && ClientSynchronizer.SendingData){ //Server
+		if(ServerSynchronizer.IsServer){ //Server
 			//Calculate velocity using the velocity from the client and move the object
 			Velocity = InputedVelocity.Normalized()*Speed;
 			MoveAndSlide();
-		}else if(!ClientSynchronizer.IsServer && ServerSynchronizer.SendingData){ //Clients
+		}else if(!ClientSynchronizer.IsServer){ //Clients
 			if(ClientSynchronizer.IsLocal){ //Local Client
 				//Get inputed velocity from the clients
 				InputedVelocity = Input.GetVector("Left","Right","Up","Down");

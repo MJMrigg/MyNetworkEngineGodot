@@ -14,6 +14,11 @@ public partial class Menu : VBoxContainer
 	public override void _Ready()
 	{
 	}
+	
+	//Hide the networking section of the menu, since the client is connected.
+	public void ToggleMenu(){
+		NetworkingSection.Visible = false;
+	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
@@ -25,14 +30,14 @@ public partial class Menu : VBoxContainer
 	
 	//When the server is started, hide the join button
 	public void CreateGame(){
-		NetworkingSection.Visible = false;
+		ToggleMenu();
 		EndButton.Text = "End Game";
 		GenericCore.Instance.CreateGame();
 	}
 	
 	//When the player joins a game, hide the menu and the join button
 	public void JoinGame(){
-		NetworkingSection.Visible = false;
+		ToggleMenu();
 		Visible = false;
 		//Change port and IP address
 		if(IpAddress != "" && IpAddress != null){
@@ -53,8 +58,12 @@ public partial class Menu : VBoxContainer
 	
 	//When the player leaves the game, unhide them menu and its options
 	public void LeaveGame(){
-		Disconnected();
-		GenericCore.Instance.RemoveMultiplayerPeer();
+		if(GenericCore.Instance.ThinksItsConnected){
+			Disconnected();
+			GenericCore.Instance.RemoveMultiplayerPeer();
+		}else{
+			GetTree().Quit();
+		}
 	}
 	
 	//Make sure the port is an integer at all times

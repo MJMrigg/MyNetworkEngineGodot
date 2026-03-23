@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://3bony6qrrcpg"]
 
-[ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_oolk3"]
-[ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="2_7ig0a"]
+[ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_kyqiw"]
+[ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="2_gntrk"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_y7k42"]
 size = Vector3(100, 100, 1)
@@ -25,8 +25,8 @@ properties/0/path = NodePath(".:InputedVelocity")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer")]
-script = ExtResource("1_oolk3")
+[node name="Circle" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer")]
+script = ExtResource("1_kyqiw")
 ClientSynchronizer = NodePath("ClientSynchronizer")
 ServerSynchronizer = NodePath("ServerSynchronizer")
 
@@ -35,13 +35,10 @@ mesh = SubResource("BoxMesh_y7k42")
 
 [node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_oolk3")
-script = ExtResource("2_7ig0a")
+script = ExtResource("2_gntrk")
 
 [node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_7ig0a")
 public_visibility = false
-script = ExtResource("2_7ig0a")
+script = ExtResource("2_gntrk")
 ClientAuthority = true
-
-[connection signal="synchronized" from="ServerSynchronizer" to="ServerSynchronizer" method="Synchronizing"]
-[connection signal="synchronized" from="ClientSynchronizer" to="ClientSynchronizer" method="Synchronizing"]

@@ -1,15 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://c35pl50m7cqgd"]
+[gd_scene load_steps=6 format=3 uid="uid://c35pl50m7cqgd"]
 
 [ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
 [ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Scripts/Menu.cs" id="2_nbt2s"]
 [ext_resource type="Script" uid="uid://d0geigxvsllc1" path="res://Scripts/GameMaster.cs" id="3_7kk1n"]
 [ext_resource type="Script" uid="uid://cugvubk20vm4s" path="res://NetworkEngine/NetworkCore.cs" id="3_hirbl"]
+[ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="5_8pgip"]
 
 [node name="GenericCore" type="Node" node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_sk6ly")
 MainNetworkCore = NodePath("ObjectSpawner")
 
-[node name="Control" type="Control" parent="."]
+[node name="Online" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,10 +19,19 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="UiSpawner" type="MultiplayerSpawner" parent="."]
-spawn_path = NodePath("../Control")
+spawn_path = NodePath("../Online")
 script = ExtResource("3_hirbl")
 
-[node name="Menu" type="VBoxContainer" parent="." node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
+[node name="Offline" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="VBoxContainer" parent="Offline" node_paths=PackedStringArray("NetworkingSection", "EndButton", "PortText")]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -38,54 +48,106 @@ NetworkingSection = NodePath("NetworkingSection")
 EndButton = NodePath("End")
 PortText = NodePath("NetworkingSection/Port")
 
-[node name="NetworkingSection" type="VBoxContainer" parent="Menu"]
+[node name="ClientInformation" type="HBoxContainer" parent="Offline/Menu"]
 layout_mode = 2
 
-[node name="IpAddress" type="LineEdit" parent="Menu/NetworkingSection"]
+[node name="PanelContainer" type="PanelContainer" parent="Offline/Menu/ClientInformation"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TextureRect" type="TextureRect" parent="Offline/Menu/ClientInformation/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Offline/Menu/ClientInformation"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Character" type="ItemList" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="Color" type="ColorPickerButton" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+color = Color(1, 1, 1, 1)
+
+[node name="Name" type="LineEdit" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+placeholder_text = "Name"
+
+[node name="NetworkingSection" type="VBoxContainer" parent="Offline/Menu"]
+layout_mode = 2
+
+[node name="IpAddress" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
+visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "IP Address"
 alignment = 1
 
-[node name="Port" type="LineEdit" parent="Menu/NetworkingSection"]
+[node name="Port" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
+visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "Port"
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Menu/NetworkingSection"]
+[node name="Level" type="ItemList" parent="Offline/Menu/NetworkingSection"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Offline/Menu/NetworkingSection"]
 layout_mode = 2
 alignment = 1
 
-[node name="Host" type="Button" parent="Menu/NetworkingSection/HBoxContainer"]
+[node name="Host" type="Button" parent="Offline/Menu/NetworkingSection/HBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Host"
 
-[node name="Join" type="Button" parent="Menu/NetworkingSection/HBoxContainer"]
+[node name="Join" type="Button" parent="Offline/Menu/NetworkingSection/HBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 
-[node name="End" type="Button" parent="Menu"]
+[node name="End" type="Button" parent="Offline/Menu"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Quit"
+
+[node name="Database" type="Label" parent="Offline"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.186
+anchor_bottom = 0.07700001
+offset_right = -0.27200317
+offset_bottom = 0.10399628
 
 [node name="Game" type="Node2D" parent="."]
 script = ExtResource("3_7kk1n")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg")
+_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg", "", "", "", "uid://b7o82udckvuxv")
 spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
 
+[node name="CoinSpawnEgg" type="Node2D" parent="."]
+position = Vector2(260, 266)
+script = ExtResource("5_8pgip")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
-[connection signal="ClientConnectionFail" from="." to="Menu" method="Disconnected"]
-[connection signal="ServerDisconnected" from="." to="Menu" method="Disconnected"]
-[connection signal="text_changed" from="Menu/NetworkingSection/Port" to="Menu" method="ManagePort"]
-[connection signal="pressed" from="Menu/NetworkingSection/HBoxContainer/Host" to="Menu" method="CreateGame"]
-[connection signal="pressed" from="Menu/NetworkingSection/HBoxContainer/Join" to="Menu" method="JoinGame"]
-[connection signal="pressed" from="Menu/End" to="Menu" method="LeaveGame"]
+[connection signal="ClientConnectionFail" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ServerCreated" from="." to="Offline/Menu" method="ToggleMenu"]
+[connection signal="ServerDisconnected" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="text_changed" from="Offline/Menu/NetworkingSection/Port" to="Offline/Menu" method="ManagePort"]
+[connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Host" to="Offline/Menu" method="CreateGame"]
+[connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Join" to="Offline/Menu" method="JoinGame"]
+[connection signal="pressed" from="Offline/Menu/End" to="Offline/Menu" method="LeaveGame"]

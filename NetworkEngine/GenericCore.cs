@@ -1,4 +1,5 @@
 using Godot;
+using System.Diagnostics;
 
 public partial class GenericCore : Node
 {
@@ -12,6 +13,7 @@ public partial class GenericCore : Node
 	[Signal] public delegate void ServerDisconnectedEventHandler();
 	[Signal] public delegate void ClientConnectionFailEventHandler();
 	[Signal] public delegate void ClientConnectionSucessEventHandler(int PeerId);
+	[Signal] public delegate void ServerCreatedEventHandler();
 	
 	//Connection information
 	[Export] public string DefaultServerIP = "127.0.0.1"; // IPv4 localhost
@@ -21,13 +23,15 @@ public partial class GenericCore : Node
 	
 	//Variables that make my life easier
 	public bool ThinksItsConnected = false; //Whether the multiplayer peer is connected
+	
+	//Spawners
 	[Export] public NetworkCore MainNetworkCore;
 
 	// This will contain the unique multiplayer keys for each registered connection
 	// It's a dictionary to make life a little easier
 	public Godot.Collections.Dictionary<long, long> Connections = new Godot.Collections.Dictionary<long, long>();
 
-	public override void _Ready()
+	public override void _EnterTree()
 	{
 		Instance = this;
 		//Server and client
@@ -37,6 +41,22 @@ public partial class GenericCore : Node
 		Multiplayer.ConnectedToServer += OnConnectOk;
 		Multiplayer.ConnectionFailed += OnConnectionFail;
 		Multiplayer.ServerDisconnected += OnServerDisconnected;
+	}
+	
+	public override void _Ready(){
+		//Create servers based on command line arguments
+		string[] Args = OS.GetCmdlineArgs();
+		for(int i = 0; i < Args.Length; i++){
+			if(Args[i] == "MASTER"){
+				//Create master server
+				break;
+			}else if(Args[i] == "GAMESERVER"){
+				//Create a game server on a port
+				Port = int.Parse(Args[i+1]);
+				CreateGame();
+				break;
+			}
+		}
 	}
 	
 	//Join a multiplayer agme
@@ -79,7 +99,7 @@ public partial class GenericCore : Node
 		Multiplayer.MultiplayerPeer = Peer;
 		//Register the server in the list of connections
 		Connections[1] = 1;
-		EmitSignal(SignalName.ClientConnected, 1);
+		EmitSignal(SignalName.ServerCreated);
 		
 		//Mark that this is the server and it is connected
 		ThinksItsConnected = true;
@@ -154,6 +174,10 @@ public partial class GenericCore : Node
 	
 	//Get whether the generic core is the server
 	public bool IsServer(){
+		//Return false if the server was turned off
+		if(!ThinksItsConnected){
+			return false;
+		}
 		return Multiplayer.IsServer();
 	}
 	

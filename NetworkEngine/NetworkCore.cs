@@ -6,8 +6,8 @@ public partial class NetworkCore : MultiplayerSpawner
 {
 	//Spawn first object in spawn list upon client connect
 	public void SpawnOnConnection(int OwnerId){
-		if(OwnerId != 1 && GenericCore.Instance.IsServer()){ //Not server though
-			SpawnObject(0, new Vector3(GD.RandRange(0,400),GD.RandRange(0,400),0), new Vector3(GD.RandRange(0,400),GD.RandRange(0,400),0), new Vector3(GD.RandRange(1,3),GD.RandRange(1,3),1), OwnerId);
+		if(OwnerId != 1 && GenericCore.Instance.IsServer()){ //Not when the server connects though
+			SpawnObject(0, new Vector3(0,0,0), new Vector3(0,0,0), new Vector3(1,1,1), OwnerId);
 		}
 	}
 	
@@ -36,6 +36,25 @@ public partial class NetworkCore : MultiplayerSpawner
 			
 			//Add it to the scene
 			GetNode(SpawnPath).AddChild(NewObject);
+			
+			/*Collections.Array[Node] Synchronizers = NewObject.GetChildren("*","MultiplayerSychronizer");
+			foreach(Node Child in Synchronizers){
+				GD.Print(Child);
+				GD.Print(Child is NetId);
+			}*/
+
+			//Connect the disconnected signal to its NetId so that it despawns when the player disconnects
+			foreach(Node Child in NewObject.GetChildren()){
+				if(!(Child is NetId)){
+					continue;
+				}
+				NetId Temp = (NetId)Child;
+				//Only the server should be deleting objects
+				if(Temp.IsServer){
+					GenericCore.Instance.ClientDisconnected += Temp.ClientDespawn;
+					GenericCore.Instance.ServerDisconnected += Temp.ServerDespawn;
+				}
+			}
 			
 			//Return it
 			return NewObject;

@@ -8,9 +8,6 @@ public partial class NetId : MultiplayerSynchronizer
 	public bool IsLocal = false; //If the peer is the local client
 	public bool IsServer = false; //If the peer is the server
 	
-	//Whether the NetId is sending data to the server
-	public bool SendingData = false;
-	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -24,11 +21,24 @@ public partial class NetId : MultiplayerSynchronizer
 		IsLocal = (GetMultiplayerAuthority() == GenericCore.Instance.GetConnectionId());
 		
 		base._Ready();
+		
+		/*
+		ON THE NODE THE SYNCHRONIZER IS ATTATCHED TO, MAKE SURE TO ADD THE FOLLOWING:
+		public override void _EnterTree(){
+			//Give client authority to the client synchronizer
+			ClientSynchronizer.GiveAuthority();
+			base._EnterTree();
+		}
+		*/
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		if(!GenericCore.Instance.ThinksItsConnected){
+			GetNode(RootPath).QueueFree();
+		}
+		base._Process(delta);
 	}
 	
 	//Give client authority to this synchronizer using the name of the node its synchronizing
@@ -42,14 +52,16 @@ public partial class NetId : MultiplayerSynchronizer
 		IsServer = GenericCore.Instance.IsServer();
 	}
 	
-	//Tell the object the synchronizer is attached to that its synchronizing data now
-	public void Synchronizing(){
-		//Disconnect the synchronized signal so that it doesn't keep calling this function every frame
-		var Function = new Callable(this, nameof(Synchronizing));
-		if(IsConnected(SignalName.Synchronized, Function)){
-			Disconnect(SignalName.Synchronized, Function);
+	//Despawn the object when the client disconnects
+	public void ClientDespawn(int PeerId){
+		if(PeerId != GetMultiplayerAuthority()){
+			return;
 		}
-		//Say that the NetId is sending data
-		SendingData = true;
+		GetNode(RootPath).QueueFree();
+	}
+	
+	//Despawn the object when the server disconnects
+	public void ServerDespawn(){
+		GetNode(RootPath).QueueFree();
 	}
 }
