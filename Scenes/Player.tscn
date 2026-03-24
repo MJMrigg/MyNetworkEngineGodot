@@ -1,37 +1,85 @@
-[gd_scene load_steps=6 format=3 uid="uid://3bony6qrrcpg"]
+[gd_scene load_steps=8 format=3 uid="uid://3bony6qrrcpg"]
 
 [ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_kyqiw"]
 [ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="2_gntrk"]
+[ext_resource type="Texture2D" uid="uid://08na0i7kethe" path="res://Images/Characters/Circle.png" id="3_gntrk"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_y7k42"]
-size = Vector3(100, 100, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gntrk"]
+bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dewec"]
+bg_color = Color(0, 1, 0, 1)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oolk3"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
+properties/1/path = NodePath(".:velocity")
 properties/1/spawn = true
 properties/1/replication_mode = 1
-properties/2/path = NodePath(".:scale")
+properties/2/path = NodePath(".:Health")
 properties/2/spawn = true
 properties/2/replication_mode = 1
-properties/3/path = NodePath(".:velocity")
+properties/3/path = NodePath(".:Score")
 properties/3/spawn = true
 properties/3/replication_mode = 1
+properties/4/path = NodePath("Sprite2D:modulate")
+properties/4/spawn = true
+properties/4/replication_mode = 2
+properties/5/path = NodePath("Name:text")
+properties/5/spawn = true
+properties/5/replication_mode = 2
+properties/6/path = NodePath("Name:position:x")
+properties/6/spawn = true
+properties/6/replication_mode = 2
+properties/7/path = NodePath("Name:size")
+properties/7/spawn = true
+properties/7/replication_mode = 2
+properties/8/path = NodePath("Name:horizontal_alignment")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7ig0a"]
 properties/0/path = NodePath(".:InputedVelocity")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[node name="Circle" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer")]
+[node name="Circle" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer", "NameTag", "HealthBar", "Sprite")]
 script = ExtResource("1_kyqiw")
 ClientSynchronizer = NodePath("ClientSynchronizer")
 ServerSynchronizer = NodePath("ServerSynchronizer")
+NameTag = NodePath("Name")
+HealthBar = NodePath("HealthBar")
+Sprite = NodePath("Sprite2D")
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
-mesh = SubResource("BoxMesh_y7k42")
+[node name="HealthBar" type="ProgressBar" parent="."]
+anchors_preset = -1
+anchor_left = -0.37500003
+anchor_top = -0.21700001
+anchor_right = 1.3750001
+anchor_bottom = 0.957
+offset_left = -63.0
+offset_top = -54.0
+offset_right = 63.0
+offset_bottom = -48.0
+theme_override_styles/background = SubResource("StyleBoxFlat_gntrk")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dewec")
+value = 100.0
+show_percentage = false
+
+[node name="Name" type="Label" parent="."]
+anchors_preset = -1
+anchor_left = -0.125
+offset_left = -37.0
+offset_top = -77.0
+offset_right = 36.0
+offset_bottom = -54.0
+text = "No Name"
+horizontal_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("3_gntrk")
 
 [node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_oolk3")

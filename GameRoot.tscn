@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c35pl50m7cqgd"]
+[gd_scene load_steps=12 format=3 uid="uid://c35pl50m7cqgd"]
 
 [ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
 [ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Scripts/Menu.cs" id="2_nbt2s"]
@@ -9,6 +9,10 @@
 [ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="5_8pgip"]
 [ext_resource type="Texture2D" uid="uid://c2j6gov3uc8tv" path="res://Images/Characters/Triangle.png" id="5_pv2v4"]
 [ext_resource type="Texture2D" uid="uid://dd82cwhu65ctw" path="res://Images/Characters/Star.png" id="6_kjgx1"]
+[ext_resource type="Script" uid="uid://45ydin1d5ckt" path="res://Scripts/Database.cs" id="7_pv2v4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a4rlw"]
+bg_color = Color(0.18359044, 0.18359047, 0.18359032, 1)
 
 [node name="GenericCore" type="Node" node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_sk6ly")
@@ -58,6 +62,7 @@ size_flags_horizontal = 3
 [node name="TextureRect" type="TextureRect" parent="Offline/Menu/ClientInformation/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+expand_mode = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Offline/Menu/ClientInformation"]
 layout_mode = 2
@@ -103,9 +108,32 @@ layout_mode = 2
 placeholder_text = "Port"
 alignment = 1
 
-[node name="Level" type="ItemList" parent="Offline/Menu/NetworkingSection"]
+[node name="LevelSelector" type="HBoxContainer" parent="Offline/Menu/NetworkingSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Offline/Menu/NetworkingSection/LevelSelector"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+size_flags_stretch_ratio = 0.4
+theme_override_colors/font_color = Color(1, 1, 1, 0.48235294)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_a4rlw")
+text = "Level:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level" type="ItemList" parent="Offline/Menu/NetworkingSection/LevelSelector"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 4
+item_count = 3
+icon_scale = 0.25
+fixed_icon_size = Vector2i(0, 50)
+item_0/text = "Grasslands"
+item_1/text = "Desert"
+item_2/text = "Volcano"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Offline/Menu/NetworkingSection"]
 layout_mode = 2
@@ -129,17 +157,22 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 text = "Quit"
 
-[node name="Database" type="Label" parent="Offline"]
+[node name="Database" type="Label" parent="Offline" node_paths=PackedStringArray("CharacterImage")]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.186
 anchor_bottom = 0.07700001
 offset_right = -0.27200317
 offset_bottom = 0.10399628
+script = ExtResource("7_pv2v4")
+CharacterImage = NodePath("../Menu/ClientInformation/PanelContainer/TextureRect")
 
 [node name="UiSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://cxno5e2skb0th")
 spawn_path = NodePath("../Online")
 script = ExtResource("3_hirbl")
+SpawnOnConnect = true
 
 [node name="Game" type="Node2D" parent="."]
 script = ExtResource("3_7kk1n")
@@ -148,7 +181,6 @@ script = ExtResource("3_7kk1n")
 _spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://b7o82udckvuxv", "uid://bb5vxj87rhtew", "uid://bup8860i4q1th", "uid://bx8wmsos5qt58")
 spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
-SpawnOnConnect = true
 
 [node name="CoinSpawnEgg" type="Node2D" parent="."]
 position = Vector2(260, 266)
@@ -162,10 +194,14 @@ RespawnTimer = 10.0
 [connection signal="ClientConnectionFail" from="." to="Offline/Menu" method="Disconnected"]
 [connection signal="ServerCreated" from="." to="Offline/Menu" method="ToggleMenu"]
 [connection signal="ServerCreated" from="." to="Game" method="SpawnLevel"]
-[connection signal="ServerDisconnected" from="." to="UiSpawner" method="DestroyObjects"]
 [connection signal="ServerDisconnected" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ServerDisconnected" from="." to="UiSpawner" method="DestroyObjects"]
 [connection signal="ServerDisconnected" from="." to="ObjectSpawner" method="DestroyObjects"]
+[connection signal="item_selected" from="Offline/Menu/ClientInformation/VBoxContainer/Character" to="Offline/Database" method="ChangeCharacter"]
+[connection signal="color_changed" from="Offline/Menu/ClientInformation/VBoxContainer/Color" to="Offline/Database" method="ChangeColor"]
+[connection signal="text_changed" from="Offline/Menu/ClientInformation/VBoxContainer/Name" to="Offline/Database" method="ChangeName"]
 [connection signal="text_changed" from="Offline/Menu/NetworkingSection/Port" to="Offline/Menu" method="ManagePort"]
+[connection signal="item_selected" from="Offline/Menu/NetworkingSection/LevelSelector/Level" to="Offline/Database" method="SetLevel"]
 [connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Host" to="Offline/Menu" method="CreateGame"]
 [connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Join" to="Offline/Menu" method="JoinGame"]
 [connection signal="pressed" from="Offline/Menu/End" to="Offline/Menu" method="LeaveGame"]

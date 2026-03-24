@@ -3,9 +3,16 @@ using System;
 
 public partial class Character : CharacterBody2D
 {
-	[Export] public float Speed = 300.0f;
 	[Export] public NetId ClientSynchronizer;
 	[Export] public NetId ServerSynchronizer;
+	
+	//Player variables
+	public float Health = 0.0f;
+	public int Score = 0;
+	[Export] public float Speed = 300.0f;
+	[Export] public Label NameTag;
+	[Export] public ProgressBar HealthBar;
+	[Export] public Sprite2D Sprite;
 	
 	//Input variables
 	public Vector2 InputedVelocity = Vector2.Zero;
@@ -35,5 +42,29 @@ public partial class Character : CharacterBody2D
 				
 			}
 		}
+	}
+	
+	//Subtract a value from health.
+	public void TakeDamage(float Change){
+		Health -= Change;
+		HealthBar.Value = Health;
+	}
+	
+	//Set the health to a number
+	public void SetHealth(float Value){
+		Health = Value;
+		HealthBar.Value = Value;
+	}
+	
+	//Change the name and then center the name tag
+	public void ChangeName(string NewName){
+		NameTag.Text = NewName;
+		NameTag.Size = new Vector2(NewName.Length, NameTag.Size.Y);
+		NameTag.Position = new Vector2(-0.5f*NameTag.Size.X, NameTag.Position.Y);
+	}
+	
+	//Change the color of the sprite
+	public void ChangeColor(Color NewColor){
+		Sprite.Modulate = NewColor;
 	}
 }

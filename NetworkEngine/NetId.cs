@@ -9,7 +9,7 @@ public partial class NetId : MultiplayerSynchronizer
 	public bool IsServer = false; //If the peer is the server
 	
 	//The connection that NetId handles
-	public int OwnerId;
+	public int OwnerId=1;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -46,11 +46,12 @@ public partial class NetId : MultiplayerSynchronizer
 		//Redo network variables
 		IsLocal = (ClientId == GenericCore.Instance.GetConnectionId());
 		IsServer = GenericCore.Instance.IsServer();
+		OwnerId = ClientId;
 	}
 	
 	//Despawn the object when the client disconnects
 	public void ClientDespawn(int PeerId){
-		if(PeerId != GetMultiplayerAuthority()){
+		if(PeerId != OwnerId){
 			return;
 		}
 		GetNode(RootPath).QueueFree();

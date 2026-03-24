@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxno5e2skb0th"]
+
+[ext_resource type="Script" uid="uid://hgarb4on8y0x" path="res://Scripts/Npm.cs" id="1_52p3t"]
+[ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="2_2cvpl"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_52p3t"]
+properties/0/path = NodePath(".:Score")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:PlayerName")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:MaxHealth")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:Character")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:CharacterColor")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+
+[node name="Npm" type="Control" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_52p3t")
+ClientSynchronizer = NodePath("ClientSynchronizer")
+ServerSynchronizer = NodePath("ServerSynchronizer")
+
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_52p3t")
+script = ExtResource("2_2cvpl")
+
+[node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_52p3t")
+public_visibility = false
+script = ExtResource("2_2cvpl")
+ClientAuthority = true

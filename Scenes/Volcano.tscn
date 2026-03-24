@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://drb4chirpy35l" path="res://Images/Levels/LavaLevel.png" id="1_q4ymm"]
 
-[node name="Forest" type="Sprite2D"]
+[node name="Volcano" type="Sprite2D"]
 z_index = -1
 position = Vector2(576, 324.00006)
 scale = Vector2(2.2500002, 1.2656252)
