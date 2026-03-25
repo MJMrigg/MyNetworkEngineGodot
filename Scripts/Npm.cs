@@ -60,5 +60,6 @@ public partial class Npm : Control
 		ThePlayer.SetHealth(Health);
 		ThePlayer.ChangeName(PlayerName);
 		ThePlayer.ChangeColor(CharacterColor);
+		ThePlayer.DataStore = this;
 	}
 }

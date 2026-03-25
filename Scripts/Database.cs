@@ -73,4 +73,18 @@ public partial class Database : Label
 		CharacterColor = NewColor;
 		CharacterImage.Modulate = CharacterColor;
 	}
+	
+	//Show/hide the menu when the client connects/disconnects to the server
+	public void ShowScoreOnConnect(int PeerId){
+		if(GenericCore.Instance.IsServer()){
+			return;
+		}
+		Visible = true;
+	}
+	public void HideScoreOnDisconnect(int PeerId){
+		if(GenericCore.Instance.IsServer()){
+			return;
+		}
+		Visible = false;
+	}
 }

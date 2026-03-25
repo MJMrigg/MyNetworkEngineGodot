@@ -183,7 +183,7 @@ spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
 
 [node name="CoinSpawnEgg" type="Node2D" parent="."]
-position = Vector2(260, 266)
+position = Vector2(253, 247)
 script = ExtResource("5_8pgip")
 SpawnIndex = 4
 Respawn = true
@@ -192,6 +192,7 @@ RespawnTimer = 10.0
 [connection signal="ClientConnected" from="." to="UiSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnectionFail" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ClientConnectionSucess" from="." to="Offline/Database" method="ShowScoreOnConnect"]
 [connection signal="ServerCreated" from="." to="Offline/Menu" method="ToggleMenu"]
 [connection signal="ServerCreated" from="." to="Game" method="SpawnLevel"]
 [connection signal="ServerDisconnected" from="." to="Offline/Menu" method="Disconnected"]

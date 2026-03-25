@@ -17,7 +17,7 @@ public partial class SpawnEgg : Node2D
 		//If the Generic Core is already connected, spawn the object
 		if(GenericCore.Instance.ThinksItsConnected && GenericCore.Instance.IsServer()){
 			Spawn();
-		}else if(!GenericCore.Instance.ThinksItsConnected && GenericCore.Instance.IsServer()){
+		}else{
 			//If it's not connected, start listening for the connected signal
 			GenericCore.Instance.ServerCreated += Spawn;
 		}
@@ -25,11 +25,13 @@ public partial class SpawnEgg : Node2D
 	
 	public override void _Process(double delta){
 		base._Process(delta);
-		//If the object was deleted and it needs to be respawed, do it
-		if(Respawn && TheObject == null && !Spawning){
+		if(!GenericCore.Instance.IsServer()){
+			return;
+		}
+		//If the object was deleted and it needs to be respawned, do it
+		if(Spawned && Respawn && !GodotObject.IsInstanceValid(TheObject) && !Spawning){
 			Spawning = true;
 			Spawn();
-			Spawning = false;
 		}
 	}
 	
@@ -64,5 +66,6 @@ public partial class SpawnEgg : Node2D
 			1
 		);
 		Spawned = true;
+		Spawning = false;
 	}
 }

@@ -66,6 +66,7 @@ public partial class NetworkCore : MultiplayerSpawner
 					continue;
 				}
 				NetId Temp = (NetId)Child;
+				Temp.OwnerId = OwnerId;
 				//Only the server should be deleting objects
 				if(Temp.IsServer){
 					GenericCore.Instance.ClientDisconnected += Temp.ClientDespawn;

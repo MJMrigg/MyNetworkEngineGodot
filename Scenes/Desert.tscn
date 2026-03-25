@@ -1,17 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://bup8860i4q1th"]
+[gd_scene load_steps=5 format=3 uid="uid://bup8860i4q1th"]
 
 [ext_resource type="Texture2D" uid="uid://bhaxvn0yyxflw" path="res://Images/Levels/Desert.png" id="1_fids1"]
 [ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="2_0h24v"]
+[ext_resource type="PackedScene" uid="uid://clm8abwfdxivw" path="res://Scenes/ForestPortal.tscn" id="3_nb88n"]
+[ext_resource type="PackedScene" uid="uid://cjwal6ambmu0" path="res://Scenes/VolcanoPortal.tscn" id="4_18ojf"]
 
-[node name="Desert" type="Sprite2D"]
+[node name="Desert" type="Node2D"]
 z_index = -1
-position = Vector2(576, 324.00006)
-scale = Vector2(2.2500002, 1.2656252)
-texture = ExtResource("1_fids1")
 
 [node name="CoinSpawnEgg" type="Node2D" parent="."]
-position = Vector2(197.77776, 165.13571)
+position = Vector2(526, 342)
 script = ExtResource("2_0h24v")
 SpawnIndex = 4
 Respawn = true
 RespawnTimer = 10.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(574.7222, 325.18515)
+scale = Vector2(2.2432728, 1.2609955)
+texture = ExtResource("1_fids1")
+
+[node name="ForestPortal" parent="." instance=ExtResource("3_nb88n")]
+position = Vector2(134, 517)
+
+[node name="ForestPortal2" parent="." instance=ExtResource("4_18ojf")]
+position = Vector2(1015, 514)

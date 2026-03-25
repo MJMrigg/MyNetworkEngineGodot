@@ -3,6 +3,7 @@ using System;
 
 public partial class Character : CharacterBody2D
 {
+	//NetIds
 	[Export] public NetId ClientSynchronizer;
 	[Export] public NetId ServerSynchronizer;
 	
@@ -16,6 +17,9 @@ public partial class Character : CharacterBody2D
 	
 	//Input variables
 	public Vector2 InputedVelocity = Vector2.Zero;
+	
+	//Reference to the NPM that spawned it
+	public Npm DataStore;
 	
 	public override void _EnterTree(){
 		//Give client authority to the client synchronizer
@@ -58,13 +62,24 @@ public partial class Character : CharacterBody2D
 	
 	//Change the name and then center the name tag
 	public void ChangeName(string NewName){
+		//Get the pixel width of the name
+		var NameTagFont = NameTag.GetThemeFont("font");
+		int FontSize = NameTag.GetThemeFontSize("font_size");
+		Vector2 TextSize = NameTagFont.GetStringSize(NewName, HorizontalAlignment.Left, -1, FontSize);
+		//Set name
 		NameTag.Text = NewName;
-		NameTag.Size = new Vector2(NewName.Length, NameTag.Size.Y);
-		NameTag.Position = new Vector2(-0.5f*NameTag.Size.X, NameTag.Position.Y);
+		//Set the position based on the pixel width
+		NameTag.SetSize(new Vector2(-0.5f*NewName.Length, NameTag.Size.Y));
+		NameTag.SetPosition(new Vector2(-0.5f*TextSize.X, NameTag.Position.Y));
 	}
 	
 	//Change the color of the sprite
 	public void ChangeColor(Color NewColor){
 		Sprite.Modulate = NewColor;
+	}
+	
+	public void GivePoints(){
+		Score += 1;
+		Database.Instance.ChangeScore(1);
 	}
 }

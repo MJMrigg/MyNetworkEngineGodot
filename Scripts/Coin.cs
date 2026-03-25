@@ -15,4 +15,19 @@ public partial class Coin : CharacterBody2D
 			}
 		}
 	}
+	
+	//Player collects the coin
+	public void Collide(Node2D body){
+		//GD.Print("Player Collision");
+		if(!GenericCore.Instance.IsServer()){
+			return;
+		}
+		if(!(body is Character)){
+			return;
+		}
+		Character Player = (Character)body;
+		Player.GivePoints();
+		GD.Print("Queue Freeing...................");
+		QueueFree();
+	}
 }

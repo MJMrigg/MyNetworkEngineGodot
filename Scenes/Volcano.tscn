@@ -1,9 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bx8wmsos5qt58"]
+[gd_scene load_steps=4 format=3 uid="uid://bx8wmsos5qt58"]
 
 [ext_resource type="Texture2D" uid="uid://drb4chirpy35l" path="res://Images/Levels/LavaLevel.png" id="1_q4ymm"]
+[ext_resource type="PackedScene" uid="uid://b2bvbvrv03krh" path="res://Scenes/DesertPortal.tscn" id="2_ufeo1"]
+[ext_resource type="PackedScene" uid="uid://clm8abwfdxivw" path="res://Scenes/ForestPortal.tscn" id="3_pemg0"]
 
-[node name="Volcano" type="Sprite2D"]
+[node name="Volcano" type="Node2D"]
 z_index = -1
-position = Vector2(576, 324.00006)
-scale = Vector2(2.2500002, 1.2656252)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(577, 324.5)
+scale = Vector2(2.25, 1.2636719)
 texture = ExtResource("1_q4ymm")
+
+[node name="ForestPortal" parent="." instance=ExtResource("2_ufeo1")]
+position = Vector2(133, 514)
+
+[node name="ForestPortal2" parent="." instance=ExtResource("3_pemg0")]
+position = Vector2(1020, 514)

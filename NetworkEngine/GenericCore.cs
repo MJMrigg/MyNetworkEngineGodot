@@ -97,12 +97,11 @@ public partial class GenericCore : Node
 		
 		//Set the current mutiplayer peer to the server
 		Multiplayer.MultiplayerPeer = Peer;
+		//Mark that this is the server and it is connected
+		ThinksItsConnected = true;
 		//Register the server in the list of connections
 		Connections[1] = 1;
 		EmitSignal(SignalName.ServerCreated);
-		
-		//Mark that this is the server and it is connected
-		ThinksItsConnected = true;
 		
 		return Error.Ok;
 	}
