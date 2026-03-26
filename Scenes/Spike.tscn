@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3 uid="uid://jqti0wsbdj4w"]
+
+[ext_resource type="Script" uid="uid://dldvklvgj0kmo" path="res://Scripts/Spike.cs" id="1_agh12"]
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_vehyf"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vehyf"]
+material = SubResource("ORMMaterial3D_vehyf")
+radius = 25.0
+height = 50.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_agh12"]
+size = Vector3(40, 25, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vehyf"]
+radius = 41.01219
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_agh12"]
+radius = 39.0
+
+[node name="Spike" type="CharacterBody2D"]
+collision_layer = 4
+script = ExtResource("1_agh12")
+
+[node name="Center" type="MeshInstance2D" parent="."]
+modulate = Color(0.49354547, 0.49354553, 0.49354553, 1)
+rotation = 1.5707964
+mesh = SubResource("CapsuleMesh_vehyf")
+
+[node name="Spike" type="MeshInstance2D" parent="."]
+modulate = Color(0.49411765, 0.49411765, 0.49411765, 1)
+position = Vector2(0, 27)
+mesh = SubResource("PrismMesh_agh12")
+
+[node name="Spike2" type="MeshInstance2D" parent="."]
+modulate = Color(0.49411765, 0.49411765, 0.49411765, 1)
+position = Vector2(0, -27)
+rotation = 3.1415927
+mesh = SubResource("PrismMesh_agh12")
+
+[node name="Spike3" type="MeshInstance2D" parent="."]
+modulate = Color(0.49411765, 0.49411765, 0.49411765, 1)
+position = Vector2(-27, 0)
+rotation = 1.5707964
+mesh = SubResource("PrismMesh_agh12")
+
+[node name="Spike4" type="MeshInstance2D" parent="."]
+modulate = Color(0.49411765, 0.49411765, 0.49411765, 1)
+position = Vector2(27, 0)
+rotation = -1.5707964
+mesh = SubResource("PrismMesh_agh12")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_vehyf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_agh12")
+
+[connection signal="body_entered" from="Area2D" to="." method="DamagePlayer"]

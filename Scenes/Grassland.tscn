@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bb5vxj87rhtew"]
+[gd_scene load_steps=5 format=3 uid="uid://bb5vxj87rhtew"]
 
 [ext_resource type="Texture2D" uid="uid://gm5500yl5su8" path="res://Images/Levels/GrassBackgroun.png" id="1_sy5jx"]
 [ext_resource type="PackedScene" uid="uid://b2bvbvrv03krh" path="res://Scenes/DesertPortal.tscn" id="2_ykkjg"]
 [ext_resource type="PackedScene" uid="uid://cjwal6ambmu0" path="res://Scenes/VolcanoPortal.tscn" id="3_efyt6"]
+[ext_resource type="PackedScene" uid="uid://jqti0wsbdj4w" path="res://Scenes/Spike.tscn" id="4_mxfl8"]
 
 [node name="Grassland" type="Node2D"]
 z_index = -1
@@ -13,7 +14,10 @@ scale = Vector2(2.25, 1.2664449)
 texture = ExtResource("1_sy5jx")
 
 [node name="DesertPortal" parent="." instance=ExtResource("2_ykkjg")]
-position = Vector2(1016, 507)
+position = Vector2(1052, 547)
 
 [node name="ForestPortal" parent="." instance=ExtResource("3_efyt6")]
-position = Vector2(135, 512)
+position = Vector2(102, 544)
+
+[node name="Spike" parent="." instance=ExtResource("4_mxfl8")]
+position = Vector2(456, 73)

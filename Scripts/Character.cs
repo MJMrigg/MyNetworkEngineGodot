@@ -8,7 +8,7 @@ public partial class Character : CharacterBody2D
 	[Export] public NetId ServerSynchronizer;
 	
 	//Player variables
-	public float Health = 0.0f;
+	public float Health = 100.0f;
 	public int Score = 0;
 	[Export] public float Speed = 300.0f;
 	[Export] public Label NameTag;
@@ -51,13 +51,24 @@ public partial class Character : CharacterBody2D
 	//Subtract a value from health.
 	public void TakeDamage(float Change){
 		Health -= Change;
-		HealthBar.Value = Health;
+		//Handle if that was the last of their health
+		if(Health <= 0){
+			QueueFree();
+		}else{
+			//Tell clients to update the health bar.
+			Rpc(MethodName.SetHealthBar, Change);
+		}
+	}
+	
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal=false, TransferMode=MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void SetHealthBar(float Change){
+		HealthBar.Value -= Change;
 	}
 	
 	//Set the health to a number
 	public void SetHealth(float Value){
 		Health = Value;
-		HealthBar.Value = Value;
+		Rpc(MethodName.SetHealthBar, HealthBar.MaxValue-Value);
 	}
 	
 	//Change the name and then center the name tag
@@ -78,8 +89,19 @@ public partial class Character : CharacterBody2D
 		Sprite.Modulate = NewColor;
 	}
 	
+	
+	//Change the player's points
 	public void GivePoints(){
 		Score += 1;
+		Rpc(MethodName.ChangeScore);
+	}
+	
+	//Update the score on the screen
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal=false, TransferMode=MultiplayerPeer.TransferModeEnum.Reliable)]
+	public void ChangeScore(){
+		if(!ClientSynchronizer.IsLocal){
+			return;
+		}
 		Database.Instance.ChangeScore(1);
 	}
 }

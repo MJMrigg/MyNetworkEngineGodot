@@ -8,20 +8,20 @@
 [node name="Desert" type="Node2D"]
 z_index = -1
 
-[node name="CoinSpawnEgg" type="Node2D" parent="."]
-position = Vector2(526, 342)
-script = ExtResource("2_0h24v")
-SpawnIndex = 4
-Respawn = true
-RespawnTimer = 10.0
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(574.7222, 325.18515)
 scale = Vector2(2.2432728, 1.2609955)
 texture = ExtResource("1_fids1")
 
 [node name="ForestPortal" parent="." instance=ExtResource("3_nb88n")]
-position = Vector2(134, 517)
+position = Vector2(100, 549)
 
 [node name="ForestPortal2" parent="." instance=ExtResource("4_18ojf")]
-position = Vector2(1015, 514)
+position = Vector2(1049, 545)
+
+[node name="CoinSpawnEgg" type="Node2D" parent="."]
+position = Vector2(555, 355)
+script = ExtResource("2_0h24v")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0

@@ -25,8 +25,11 @@ public partial class Portal : StaticBody2D
 		if(!Player.ClientSynchronizer.IsLocal){
 			return;
 		}
-		GenericCore.Instance.RemoveMultiplayerPeer();
 		Database.Instance.Port = Port;
+		Database.Instance.Health = Player.Health;
+		
+		//Connect them to the next level
+		GenericCore.Instance.RemoveMultiplayerPeer();
 		GenericCore.Instance.Port = Port;
 		GenericCore.Instance.JoinGame();
 	}

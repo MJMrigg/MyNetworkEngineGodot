@@ -52,23 +52,27 @@ NetworkingSection = NodePath("NetworkingSection")
 EndButton = NodePath("End")
 PortText = NodePath("NetworkingSection/Port")
 
-[node name="ClientInformation" type="HBoxContainer" parent="Offline/Menu"]
+[node name="NetworkingSection" type="VBoxContainer" parent="Offline/Menu"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="Offline/Menu/ClientInformation"]
+[node name="ClientInformation" type="HBoxContainer" parent="Offline/Menu/NetworkingSection"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Offline/Menu/NetworkingSection/ClientInformation"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextureRect" type="TextureRect" parent="Offline/Menu/ClientInformation/PanelContainer"]
+[node name="TextureRect" type="TextureRect" parent="Offline/Menu/NetworkingSection/ClientInformation/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+texture = ExtResource("3_xpglq")
 expand_mode = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Offline/Menu/ClientInformation"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Offline/Menu/NetworkingSection/ClientInformation"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Character" type="ItemList" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+[node name="Character" type="ItemList" parent="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 item_count = 4
@@ -81,18 +85,15 @@ item_2/icon = ExtResource("5_pv2v4")
 item_3/text = "Star"
 item_3/icon = ExtResource("6_kjgx1")
 
-[node name="Color" type="ColorPickerButton" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+[node name="Color" type="ColorPickerButton" parent="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 color = Color(1, 1, 1, 1)
 
-[node name="Name" type="LineEdit" parent="Offline/Menu/ClientInformation/VBoxContainer"]
+[node name="Name" type="LineEdit" parent="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer"]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "Name"
-
-[node name="NetworkingSection" type="VBoxContainer" parent="Offline/Menu"]
-layout_mode = 2
 
 [node name="IpAddress" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
 visible = false
@@ -165,8 +166,10 @@ anchor_right = 0.186
 anchor_bottom = 0.07700001
 offset_right = -0.27200317
 offset_bottom = 0.10399628
+theme_override_font_sizes/font_size = 50
+text = "Score: 0"
 script = ExtResource("7_pv2v4")
-CharacterImage = NodePath("../Menu/ClientInformation/PanelContainer/TextureRect")
+CharacterImage = NodePath("../Menu/NetworkingSection/ClientInformation/PanelContainer/TextureRect")
 
 [node name="UiSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://cxno5e2skb0th")
@@ -192,15 +195,17 @@ RespawnTimer = 10.0
 [connection signal="ClientConnected" from="." to="UiSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnectionFail" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ClientConnectionFail" from="." to="Offline/Database" method="HideScoreOnDisconnect"]
 [connection signal="ClientConnectionSucess" from="." to="Offline/Database" method="ShowScoreOnConnect"]
 [connection signal="ServerCreated" from="." to="Offline/Menu" method="ToggleMenu"]
 [connection signal="ServerCreated" from="." to="Game" method="SpawnLevel"]
 [connection signal="ServerDisconnected" from="." to="Offline/Menu" method="Disconnected"]
+[connection signal="ServerDisconnected" from="." to="Offline/Database" method="HideScoreOnDisconnect"]
 [connection signal="ServerDisconnected" from="." to="UiSpawner" method="DestroyObjects"]
 [connection signal="ServerDisconnected" from="." to="ObjectSpawner" method="DestroyObjects"]
-[connection signal="item_selected" from="Offline/Menu/ClientInformation/VBoxContainer/Character" to="Offline/Database" method="ChangeCharacter"]
-[connection signal="color_changed" from="Offline/Menu/ClientInformation/VBoxContainer/Color" to="Offline/Database" method="ChangeColor"]
-[connection signal="text_changed" from="Offline/Menu/ClientInformation/VBoxContainer/Name" to="Offline/Database" method="ChangeName"]
+[connection signal="item_selected" from="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer/Character" to="Offline/Database" method="ChangeCharacter"]
+[connection signal="color_changed" from="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer/Color" to="Offline/Database" method="ChangeColor"]
+[connection signal="text_changed" from="Offline/Menu/NetworkingSection/ClientInformation/VBoxContainer/Name" to="Offline/Database" method="ChangeName"]
 [connection signal="text_changed" from="Offline/Menu/NetworkingSection/Port" to="Offline/Menu" method="ManagePort"]
 [connection signal="item_selected" from="Offline/Menu/NetworkingSection/LevelSelector/Level" to="Offline/Database" method="SetLevel"]
 [connection signal="pressed" from="Offline/Menu/NetworkingSection/HBoxContainer/Host" to="Offline/Menu" method="CreateGame"]

@@ -7,8 +7,7 @@ public partial class Database : Label
 	public int Port = 7000;
 	public int Score = 0;
 	public string PlayerName = "No Name";
-	public int Health = 100;
-	public int MaxHealth = 100;
+	public float Health = 100;
 	public int Character = 0; //The selected character
 	public Color CharacterColor = new Color(1,1,1); //The character's color
 	[Export] public TextureRect CharacterImage; //Change the textureRect when the player changes their character
@@ -30,6 +29,7 @@ public partial class Database : Label
 	//Change the port corresponding with the level
 	public void SetLevel(int NewPort){
 		Port = 7000+NewPort;
+		GenericCore.Instance.Port = Port;
 	}
 	
 	//Change the score text
@@ -42,11 +42,7 @@ public partial class Database : Label
 	public void ChangeName(string NewName){
 		PlayerName = NewName;
 	}
-	
-	public void TakeDamage(int Damage){
-		Health -= Damage;
-	}
-	
+
 	public void ChangeCharacter(int NewCharacter){
 		Character = NewCharacter;
 		string NewImage = "";
@@ -81,7 +77,7 @@ public partial class Database : Label
 		}
 		Visible = true;
 	}
-	public void HideScoreOnDisconnect(int PeerId){
+	public void HideScoreOnDisconnect(){
 		if(GenericCore.Instance.IsServer()){
 			return;
 		}
