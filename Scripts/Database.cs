@@ -4,7 +4,7 @@ using System;
 public partial class Database : Label
 {
 	//Player variables
-	public int Port = 7000;
+	public int Port = 0;
 	public int Score = 0;
 	public string PlayerName = "No Name";
 	public float Health = 100;
@@ -28,8 +28,7 @@ public partial class Database : Label
 	
 	//Change the port corresponding with the level
 	public void SetLevel(int NewPort){
-		Port = 7000+NewPort;
-		GenericCore.Instance.Port = Port;
+		GenericCore.Instance.Port = 7000+NewPort;
 	}
 	
 	//Change the score text
@@ -63,6 +62,7 @@ public partial class Database : Label
 				return;
 		}
 		CharacterImage.Texture = (Texture2D)(GD.Load(NewImage));
+		CharacterImage.Modulate = CharacterColor;
 	}
 	
 	public void ChangeColor(Color NewColor){

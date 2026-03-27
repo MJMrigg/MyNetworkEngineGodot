@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bx8wmsos5qt58"]
+[gd_scene load_steps=7 format=3 uid="uid://bx8wmsos5qt58"]
 
 [ext_resource type="Texture2D" uid="uid://drb4chirpy35l" path="res://Images/Levels/LavaLevel.png" id="1_q4ymm"]
 [ext_resource type="PackedScene" uid="uid://b2bvbvrv03krh" path="res://Scenes/DesertPortal.tscn" id="2_ufeo1"]
 [ext_resource type="PackedScene" uid="uid://clm8abwfdxivw" path="res://Scenes/ForestPortal.tscn" id="3_pemg0"]
+[ext_resource type="PackedScene" uid="uid://bphmwtsf0fluw" path="res://Scenes/SpawnPoint.tscn" id="4_iefeq"]
+[ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="5_tcwv6"]
+[ext_resource type="PackedScene" uid="uid://jqti0wsbdj4w" path="res://Scenes/Spike.tscn" id="6_l4up6"]
 
 [node name="Volcano" type="Node2D"]
 z_index = -1
@@ -17,3 +20,114 @@ position = Vector2(99, 548)
 
 [node name="ForestPortal2" parent="." instance=ExtResource("3_pemg0")]
 position = Vector2(1049, 547)
+
+[node name="DesertSpawnPoint" parent="." instance=ExtResource("4_iefeq")]
+position = Vector2(307, 540)
+LastPort = 7001
+
+[node name="ForestSpawnPoint" parent="." instance=ExtResource("4_iefeq")]
+position = Vector2(828, 542)
+LastPort = 7000
+
+[node name="CoinSpawnEgg7" type="Node2D" parent="."]
+position = Vector2(784, 171)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg8" type="Node2D" parent="."]
+position = Vector2(444, 168)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg13" type="Node2D" parent="."]
+position = Vector2(282, 31)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg14" type="Node2D" parent="."]
+position = Vector2(84, 175)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg15" type="Node2D" parent="."]
+position = Vector2(921, 62)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg16" type="Node2D" parent="."]
+position = Vector2(1086, 179)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg9" type="Node2D" parent="."]
+position = Vector2(266, 296)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg10" type="Node2D" parent="."]
+position = Vector2(618, 298)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg11" type="Node2D" parent="."]
+position = Vector2(945, 308)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="CoinSpawnEgg12" type="Node2D" parent="."]
+position = Vector2(616, 36)
+script = ExtResource("5_tcwv6")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0
+
+[node name="Spike8" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(439, 298)
+
+[node name="Spike17" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(87, 55)
+
+[node name="Spike18" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(1106, 43)
+
+[node name="Spike15" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(98, 298)
+
+[node name="Spike16" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(1108, 317)
+
+[node name="Spike9" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(778, 301)
+
+[node name="Spike10" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(953, 185)
+
+[node name="Spike11" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(270, 172)
+
+[node name="Spike12" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(617, 175)
+
+[node name="Spike13" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(451, 44)
+
+[node name="Spike14" parent="." instance=ExtResource("6_l4up6")]
+position = Vector2(778, 47)

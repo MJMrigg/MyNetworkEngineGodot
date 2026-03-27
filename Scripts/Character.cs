@@ -14,6 +14,7 @@ public partial class Character : CharacterBody2D
 	[Export] public Label NameTag;
 	[Export] public ProgressBar HealthBar;
 	[Export] public Sprite2D Sprite;
+	public bool IsDead = false;
 	
 	//Input variables
 	public Vector2 InputedVelocity = Vector2.Zero;
@@ -38,7 +39,7 @@ public partial class Character : CharacterBody2D
 			//Calculate velocity using the velocity from the client and move the object
 			Velocity = InputedVelocity.Normalized()*Speed;
 			MoveAndSlide();
-		}else if(!ClientSynchronizer.IsServer){ //Clients
+		}else{ //Clients
 			if(ClientSynchronizer.IsLocal){ //Local Client
 				//Get inputed velocity from the clients
 				InputedVelocity = Input.GetVector("Left","Right","Up","Down");
@@ -50,25 +51,26 @@ public partial class Character : CharacterBody2D
 	
 	//Subtract a value from health.
 	public void TakeDamage(float Change){
+		if(!GenericCore.Instance.IsServer()){
+			return;
+		}
 		Health -= Change;
 		//Handle if that was the last of their health
 		if(Health <= 0){
-			QueueFree();
+			//Stop synchronizing
+			ClientSynchronizer.SetMultiplayerAuthority(1);
+			ClientSynchronizer.StopSynchronizing();
+			ServerSynchronizer.StopSynchronizing();
+			CallDeferred(MethodName.QueueFree);
 		}else{
-			//Tell clients to update the health bar.
-			Rpc(MethodName.SetHealthBar, Change);
+			HealthBar.Value -= Change;
 		}
-	}
-	
-	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal=false, TransferMode=MultiplayerPeer.TransferModeEnum.Reliable)]
-	public void SetHealthBar(float Change){
-		HealthBar.Value -= Change;
 	}
 	
 	//Set the health to a number
 	public void SetHealth(float Value){
 		Health = Value;
-		Rpc(MethodName.SetHealthBar, HealthBar.MaxValue-Value);
+		HealthBar.Value = Value;
 	}
 	
 	//Change the name and then center the name tag

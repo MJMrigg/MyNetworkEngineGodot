@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bb5vxj87rhtew"]
+[gd_scene load_steps=7 format=3 uid="uid://bb5vxj87rhtew"]
 
 [ext_resource type="Texture2D" uid="uid://gm5500yl5su8" path="res://Images/Levels/GrassBackgroun.png" id="1_sy5jx"]
 [ext_resource type="PackedScene" uid="uid://b2bvbvrv03krh" path="res://Scenes/DesertPortal.tscn" id="2_ykkjg"]
 [ext_resource type="PackedScene" uid="uid://cjwal6ambmu0" path="res://Scenes/VolcanoPortal.tscn" id="3_efyt6"]
 [ext_resource type="PackedScene" uid="uid://jqti0wsbdj4w" path="res://Scenes/Spike.tscn" id="4_mxfl8"]
+[ext_resource type="PackedScene" uid="uid://bphmwtsf0fluw" path="res://Scenes/SpawnPoint.tscn" id="5_k4yee"]
+[ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="6_n51js"]
 
 [node name="Grassland" type="Node2D"]
 z_index = -1
@@ -16,8 +18,26 @@ texture = ExtResource("1_sy5jx")
 [node name="DesertPortal" parent="." instance=ExtResource("2_ykkjg")]
 position = Vector2(1052, 547)
 
-[node name="ForestPortal" parent="." instance=ExtResource("3_efyt6")]
+[node name="VolcanoPortal" parent="." instance=ExtResource("3_efyt6")]
 position = Vector2(102, 544)
 
+[node name="VolcanoSpawnPoint" parent="." instance=ExtResource("5_k4yee")]
+position = Vector2(307, 540)
+LastPort = 7002
+
+[node name="DesertSpawnPoint" parent="." instance=ExtResource("5_k4yee")]
+position = Vector2(828, 542)
+LastPort = 7001
+
 [node name="Spike" parent="." instance=ExtResource("4_mxfl8")]
-position = Vector2(456, 73)
+position = Vector2(470, 79)
+
+[node name="Spike2" parent="." instance=ExtResource("4_mxfl8")]
+position = Vector2(669, 77)
+
+[node name="CoinSpawnEgg2" type="Node2D" parent="."]
+position = Vector2(571, 74)
+script = ExtResource("6_n51js")
+SpawnIndex = 4
+Respawn = true
+RespawnTimer = 10.0

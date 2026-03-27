@@ -10,14 +10,19 @@ config_version=5
 
 [application]
 
-config/name="My Network Engine"
+config/name="World of Shapes"
 run/main_scene="uid://c35pl50m7cqgd"
 config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+run/max_fps=60
 config/icon="res://icon.svg"
 
 [dotnet]
 
 project/assembly_name="My Network Engine"
+
+[global_group]
+
+SpawnPoints=""
 
 [input]
 

@@ -56,4 +56,9 @@ public partial class NetId : MultiplayerSynchronizer
 		}
 		GetNode(RootPath).QueueFree();
 	}
+	
+	//Spawn synchronizing
+	public void StopSynchronizing(){
+		SetMultiplayerAuthority(0);
+	}
 }

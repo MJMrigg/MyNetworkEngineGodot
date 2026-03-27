@@ -25,7 +25,7 @@ public partial class Portal : StaticBody2D
 		if(!Player.ClientSynchronizer.IsLocal){
 			return;
 		}
-		Database.Instance.Port = Port;
+		//Database.Instance.Port = Port;
 		Database.Instance.Health = Player.Health;
 		
 		//Connect them to the next level

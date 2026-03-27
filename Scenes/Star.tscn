@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://3bony6qrrcpg"]
+[gd_scene load_steps=8 format=3 uid="uid://b5jnh7ro3cky7"]
 
-[ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_kyqiw"]
-[ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="2_gntrk"]
-[ext_resource type="Texture2D" uid="uid://08na0i7kethe" path="res://Images/Characters/Circle.png" id="3_gntrk"]
+[ext_resource type="Script" uid="uid://bddxsbbpbl0g3" path="res://Scripts/Character.cs" id="1_0l0nv"]
+[ext_resource type="Texture2D" uid="uid://dd82cwhu65ctw" path="res://Images/Characters/Star.png" id="2_0l0nv"]
+[ext_resource type="Script" uid="uid://utrw3nbub4va" path="res://NetworkEngine/NetId.cs" id="3_r6cmk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gntrk"]
 bg_color = Color(1, 0, 0, 1)
@@ -35,18 +35,18 @@ properties/6/replication_mode = 2
 properties/7/path = NodePath("Name:size:x")
 properties/7/spawn = true
 properties/7/replication_mode = 2
+properties/8/path = NodePath("HealthBar:value")
+properties/8/spawn = true
+properties/8/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7ig0a"]
 properties/0/path = NodePath(".:InputedVelocity")
 properties/0/spawn = true
 properties/0/replication_mode = 1
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_gntrk"]
-radius = 51.009804
-
 [node name="Circle" type="CharacterBody2D" node_paths=PackedStringArray("ClientSynchronizer", "ServerSynchronizer", "NameTag", "HealthBar", "Sprite")]
 collision_mask = 14
-script = ExtResource("1_kyqiw")
+script = ExtResource("1_0l0nv")
 ClientSynchronizer = NodePath("ClientSynchronizer")
 ServerSynchronizer = NodePath("ServerSynchronizer")
 NameTag = NodePath("Name")
@@ -77,19 +77,19 @@ text = "No Name"
 horizontal_alignment = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 3)
+position = Vector2(1, 1)
 scale = Vector2(3, 3)
-texture = ExtResource("3_gntrk")
+texture = ExtResource("2_0l0nv")
 
 [node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_oolk3")
-script = ExtResource("2_gntrk")
+script = ExtResource("3_r6cmk")
 
 [node name="ClientSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_7ig0a")
 public_visibility = false
-script = ExtResource("2_gntrk")
+script = ExtResource("3_r6cmk")
 ClientAuthority = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_gntrk")
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(1, 19, -39, 47, -46, 41, -27, 3, -45, -12, -40, -18, -15, -18, 0, -45, 18, -18, 41, -18, 44, -12, 26, 3, 48, 41, 42, 47)

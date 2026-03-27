@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c35pl50m7cqgd"]
+[gd_scene load_steps=11 format=3 uid="uid://c35pl50m7cqgd"]
 
 [ext_resource type="Script" uid="uid://dxvfr6td6nksi" path="res://NetworkEngine/GenericCore.cs" id="1_sk6ly"]
 [ext_resource type="Script" uid="uid://dooxyfyfm0unx" path="res://Scripts/Menu.cs" id="2_nbt2s"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://cugvubk20vm4s" path="res://NetworkEngine/NetworkCore.cs" id="3_hirbl"]
 [ext_resource type="Texture2D" uid="uid://cjdxcnsa4iq4y" path="res://Images/Characters/Square.png" id="3_xpglq"]
 [ext_resource type="Texture2D" uid="uid://08na0i7kethe" path="res://Images/Characters/Circle.png" id="4_a4rlw"]
-[ext_resource type="Script" uid="uid://bsqlui2a7nevh" path="res://NetworkEngine/SpawnEgg.cs" id="5_8pgip"]
 [ext_resource type="Texture2D" uid="uid://c2j6gov3uc8tv" path="res://Images/Characters/Triangle.png" id="5_pv2v4"]
 [ext_resource type="Texture2D" uid="uid://dd82cwhu65ctw" path="res://Images/Characters/Star.png" id="6_kjgx1"]
 [ext_resource type="Script" uid="uid://45ydin1d5ckt" path="res://Scripts/Database.cs" id="7_pv2v4"]
@@ -16,6 +15,7 @@ bg_color = Color(0.18359044, 0.18359047, 0.18359032, 1)
 
 [node name="GenericCore" type="Node" node_paths=PackedStringArray("MainNetworkCore")]
 script = ExtResource("1_sk6ly")
+DefaultServerIP = "23.128.112.61"
 MainNetworkCore = NodePath("ObjectSpawner")
 
 [node name="Online" type="Control" parent="."]
@@ -95,13 +95,6 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 placeholder_text = "Name"
 
-[node name="IpAddress" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
-visible = false
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-placeholder_text = "IP Address"
-alignment = 1
-
 [node name="Port" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
 visible = false
 custom_minimum_size = Vector2(0, 50)
@@ -135,6 +128,12 @@ fixed_icon_size = Vector2i(0, 50)
 item_0/text = "Grasslands"
 item_1/text = "Desert"
 item_2/text = "Volcano"
+
+[node name="IpAddress" type="LineEdit" parent="Offline/Menu/NetworkingSection"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+placeholder_text = "IP Address"
+alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Offline/Menu/NetworkingSection"]
 layout_mode = 2
@@ -181,16 +180,9 @@ SpawnOnConnect = true
 script = ExtResource("3_7kk1n")
 
 [node name="ObjectSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://3bony6qrrcpg", "uid://b7o82udckvuxv", "uid://bb5vxj87rhtew", "uid://bup8860i4q1th", "uid://bx8wmsos5qt58")
+_spawnable_scenes = PackedStringArray("uid://bwewd28v31t5u", "uid://3bony6qrrcpg", "uid://cjinan2gdwjks", "uid://b5jnh7ro3cky7", "uid://b7o82udckvuxv", "uid://bb5vxj87rhtew", "uid://bup8860i4q1th", "uid://bx8wmsos5qt58")
 spawn_path = NodePath("../Game")
 script = ExtResource("3_hirbl")
-
-[node name="CoinSpawnEgg" type="Node2D" parent="."]
-position = Vector2(253, 247)
-script = ExtResource("5_8pgip")
-SpawnIndex = 4
-Respawn = true
-RespawnTimer = 10.0
 
 [connection signal="ClientConnected" from="." to="UiSpawner" method="SpawnOnConnection"]
 [connection signal="ClientConnected" from="." to="ObjectSpawner" method="SpawnOnConnection"]
